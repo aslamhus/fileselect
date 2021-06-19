@@ -1,0 +1,40 @@
+{
+  "name": "fileselect",
+  "version": "1.0.0",
+  "module": "true",
+  "description": "Select and read a file for preview/upload",
+  "main": "FileSelect.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aslamhus/fileselect.git"
+  },
+  "keywords": [
+    "file",
+    "select"
+  ],
+  "author": "Aslam Husain",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aslamhus/fileselect.gi/issues"
+  },
+  "homepage": "https://github.com/aslamhus/fileselect.gi#readme",
+  "dependencies": {
+    "core-js": "^3.14.0",
+    "heic2any": "^0.0.3",
+    "pdfjs-dist": "^2.8.335"
+    "regenerator-runtime": "^0.13.7"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.14.5",
+    "@babel/core": "^7.14.6",
+    "@babel/preset-env": "^7.14.5",
+    "mocha": "^9.0.0",
+    "regenerator-runtime": "^0.13.7"
+  }
+}

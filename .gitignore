@@ -1,0 +1,5 @@
+node_modules/
+babel.config.json
+src/
+logs/
+.DS_Store
