@@ -27,7 +27,7 @@
   "dependencies": {
     "core-js": "^3.14.0",
     "heic2any": "^0.0.3",
-    "pdfjs-dist": "^2.8.335"
+    "pdfjs-dist": "^2.8.335",
     "regenerator-runtime": "^0.13.7"
   },
   "devDependencies": {
