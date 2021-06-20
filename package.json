@@ -1,5 +1,5 @@
 {
-  "name": "fileselect",
+  "name": "@aslamhus/fileselect",
   "version": "1.0.0",
   "module": "true",
   "description": "Select and read a file for preview/upload",
