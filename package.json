@@ -11,7 +11,8 @@
     "test": "mocha",
     "prebuild" : "npx babel src --out-file lib/FileSelect.js --presets=@babel/preset-env",
     "build": "npx babel src/FileSelect.js --out-file build/FileSelect.min.js --presets=minify,@babel/preset-env",
-    "postbuild" : "npx babel src/FileSelect.js --out-file lib/FileSelect-es6.js"
+    "postbuild" : "npx babel src/FileSelect.js --out-file lib/FileSelect-es6.js",
+    "build-dev": "cp src/FileSelect.js build/FileSelect.min.js"
   },
   "repository": {
     "type": "git",
