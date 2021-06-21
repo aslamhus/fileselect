@@ -1,6 +1,6 @@
 @aslamhus/fileselect
 =========
-Simple library for selecting and reading files and returning a preview of the selected file. FileSelect can generate previews for pdfs and images (including HEIC).
+A simple library for selecting, reading, and creating previews of files. FileSelect can generate previews for pdfs and images (including HEIC).
 
 ## Dependencies
 This package depends on the [Alex Corvi's Heic2any](https://alexcorvi.github.io/heic2any/) and [PDF.js](https://github.com/mozilla/pdf.js) to generate  blobs for Heic files and Pdfs.
@@ -9,20 +9,43 @@ This package depends on the [Alex Corvi's Heic2any](https://alexcorvi.github.io/
 `npm install @aslamhus/fileselect`
 
 ## Basic Usage
-_Note: The basic usage will automatically append a file input tag to the document. The input tag is required to trigger the file select. If there is a file tag in the DOM already, **FileSelect** will use the first one it comes across_
 
-**Triggers a file select window.**
-**When the files have been read, returns them as a promise**
+***
+_Note: The basic usage will automatically append a (hidden) file input (`<input type='file'>`) element to the document. The input element is required to trigger the file select. If there is a file element in the DOM already, **FileSelect** will use the first one it comes across_
+
+**Trigger a file select window.**
+**When the files have been read, returns a fileList as a promise**
 
     import FileSelect from 'fileselect'
     const fileSelect = new FileSelect()
     let files = fileSelect.select()
 
+**Get previews of the files**
+
+     fileSelect.select().then(fileList => {
+        // ready to generate previews
+        for(let file of fileList){
+            fileSelect.getPreview(file).then(previewElement => {
+                document.body.append(previewElement)
+            });
+        }
+    });
+        
+**Read the files as data:URLs**
+
+
+    fileSelect.select().then(fileList => {
+        fileSelect.readFiles(fileList).then(files => {
+            // ready to upload
+            console.log('files',files)
+        })
+    });
+
 
 ## Options
 
 
-### Specify a file input
+### Use a specific file input element (`<input type='file'>`)
 ---
     const myInput = document.querySelector('#myInput')
     const fileSelect = new FileSelect("*", { fileInput : myInput}
@@ -30,6 +53,8 @@ _Note: The basic usage will automatically append a file input tag to the documen
 
 ### Don't add a file input tag.
 ---
+This might be useful if you are receiving a filelist or fileobject from a datatransfer
+
     const fileSelect = new FileSelect("*", { fileInput : false })
 
 ### onFileReadComplete
@@ -53,7 +78,7 @@ If you do not want to trigger the file select window, but simply want to read th
         const fileSelect = new FileSelect();
         let readFiles = fileSelect.handleFile(file)
 
-_Note: The files must be instances of the [File Object](https://developer.mozilla.org/en-US/docs/Web/API/File) from a file input element or a DataTransfer. 
+_Note: The files must be instances of the [File Object](https://developer.mozilla.org/en-US/docs/Web/API/File) from a file input element or a DataTransfer._ 
 
 
 ### Specify which file types are allowed
