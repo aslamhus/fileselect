@@ -3,13 +3,15 @@
   "version": "1.0.3",
   "module": "true",
   "description": "Select and read a file for preview/upload",
-  "main": "./build/FileSelect.js",
+  "main": "./build/FileSelect.min.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
     "test": "mocha",
-    "build": "npx babel src --out-dir build"
+    "prebuild" : "npx babel src --out-file lib/FileSelect.js --presets=@babel/preset-env",
+    "build": "npx babel src/FileSelect.js --out-file build/FileSelect.min.js --presets=minify,@babel/preset-env",
+    "postbuild" : "npx babel src/FileSelect.js --out-file lib/FileSelect-es6.js"
   },
   "repository": {
     "type": "git",
