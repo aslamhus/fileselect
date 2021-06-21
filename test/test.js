@@ -1,26 +1,8 @@
 
-// describe('Simple Math Test', () => {
-//  it('should return 2', () => {
-//         assert.strictEqual(1 + 1, 2);
-//     });
-//  it('should return 9', () => {
-//         assert.strictEqual(3 * 3, 9);
-//     });
-// });
 
-
-// const fs = require('fs');
-// const chai = require('chai');
-// const chaiHttp = require('chai-http');
-// chai.use(chaiHttp);
-// const express = require('express');
-// const { doesNotMatch } = require('assert');
-// const app = express;
-
-const assert = require('assert');
 const expect = require('chai').expect;
+const FileSelect = require('../build/FileSelect').default;
 
-const FileSelect = require('../lib/FileSelect');
 describe('PNG allowed, input jpeg', async ()=> {
     it('should return invalid',() => {
         let fSelect = new FileSelect();
