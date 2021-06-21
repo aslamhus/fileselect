@@ -1,6 +1,6 @@
 {
   "name": "@aslamhus/fileselect",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "module": "true",
   "description": "Select and read a file for preview/upload",
   "main": "./build/FileSelect.js",
