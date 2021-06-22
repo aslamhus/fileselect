@@ -11,14 +11,21 @@ This package depends on the [Alex Corvi's Heic2any](https://alexcorvi.github.io/
 ## Basic Usage
 
 ***
-_Note: The basic usage will automatically append a (hidden) file input (`<input type='file'>`) element to the document. The input element is required to trigger the file select. If there is a file element in the DOM already, **FileSelect** will use the first one it comes across_
+The basic usage will:
+1. automatically append a (hidden) file input Markup :  `<input type='file'>` element to the DOM. The input element is required to trigger the file select. If there is already a file element in the DOM, **FileSelect** will use the first one it finds
+2. Assume all files types are allowed ("*")
 
-**Trigger a file select window.**
-**When the files have been read, returns a fileList as a promise**
+
+### Basic Example
+
+_Trigger a file select window._
+_When the files have been read, returns a fileList as a promise_
 
     import FileSelect from 'fileselect'
     const fileSelect = new FileSelect()
-    let files = fileSelect.select()
+    fileSelect.select().then(files => { 
+        // do something
+    })
 
 **Get previews of the files**
 

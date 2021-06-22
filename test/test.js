@@ -1,7 +1,7 @@
 
 
 const expect = require('chai').expect;
-const FileSelect = require('../build/FileSelect').default;
+const FileSelect = require('../build/FileSelect.min.js').default;
 
 describe('PNG allowed, input jpeg', async ()=> {
     it('should return invalid',() => {
