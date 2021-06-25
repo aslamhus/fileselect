@@ -11,14 +11,21 @@ This package depends on the [Alex Corvi's Heic2any](https://alexcorvi.github.io/
 ## Basic Usage
 
 ***
-_Note: The basic usage will automatically append a (hidden) file input (`<input type='file'>`) element to the document. The input element is required to trigger the file select. If there is a file element in the DOM already, **FileSelect** will use the first one it comes across_
+The basic usage will:
+1. automatically append a (hidden) file input element  `<input type='file'>`  to the DOM. The input element is required to trigger the file select. If there is already a file element in the DOM, **FileSelect** will use the first one it finds
+2. Assume all files types are allowed ("*")
 
-**Trigger a file select window.**
-**When the files have been read, returns a fileList as a promise**
+
+### Basic Example
+
+_Trigger a file select window._
+_When the files have been read, returns a fileList as a promise_
 
     import FileSelect from 'fileselect'
     const fileSelect = new FileSelect()
-    let files = fileSelect.select()
+    fileSelect.select().then(files => { 
+        // do something
+    })
 
 **Get previews of the files**
 
@@ -45,7 +52,7 @@ _Note: The basic usage will automatically append a (hidden) file input (`<input 
 ## Options
 
 
-### Use a specific file input element (`<input type='file'>`)
+### Use a specific file input element 
 ---
     const myInput = document.querySelector('#myInput')
     const fileSelect = new FileSelect("*", { fileInput : myInput}
@@ -57,9 +64,9 @@ This might be useful if you are receiving a filelist or fileobject from a datatr
 
     const fileSelect = new FileSelect("*", { fileInput : false })
 
-### onFileReadComplete
+### `onFileReadComplete`
 ---
-Each time a file is read, **onFileReadComplete** is called. You can access the file by passing your own callback into the **FileSelect** constructor:
+Each time a file is read, `onFileReadComplete` is called. You can access the file by passing your own callback into the `FileSelect` constructor:
 
     const fileSelect = new FileSelect("*", { onFileReadComplete : function(file){
         console.log('file object', file)
