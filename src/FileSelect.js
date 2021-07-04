@@ -202,7 +202,7 @@ class FileSelect {
     switch (mimetype) {
       case 'application':
         if (subtype === 'pdf') {
-          previewEl = await this.getPDF(url);
+          previewEl = await FileSelect.getPDF(url);
         } else {
           // default for other application types
         }
@@ -229,6 +229,8 @@ class FileSelect {
         previewEl.src = url;
         break;
     }
+    // add onload callback to revokeObjectUrls
+    if (previewEl) previewEl.onload = URL.revokeObjectURL(url);
     // 4. Create icon
     // if the client has added an icon for the file type, use it
     // otherwise return the default icon
@@ -240,8 +242,6 @@ class FileSelect {
     const iconSrc = URL.createObjectURL(iconBlob);
     const iconEl = document.createElement('img');
     iconEl.src = iconSrc;
-    // add onload callback to revokeObjectUrls
-    previewEl.onload = URL.revokeObjectURL(url);
     iconEl.onload = URL.revokeObjectURL(iconBlob);
     // 5. Return preview object with preview and icon properties
     previewObj.preview = previewEl;

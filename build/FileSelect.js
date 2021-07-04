@@ -25,6 +25,7 @@
 
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
+import FileIcon from './FileIcon';
 
 class FileSelect {
   constructor(
@@ -38,11 +39,7 @@ class FileSelect {
       theme: null,
     }
   ) {
-    this.initThemes();
-    this.colors
-      = options.colors
-      || this.setColorTheme(options.theme)
-      || this.themes.greyscale;
+    this.fileIcon = new FileIcon(options.colors, options.theme);
     this.svg = {
       default:
         '<svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="file" class="svg-inline--fa fa-file fa-w-12" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="currentColor" d="M369.9 97.9L286 14C277 5 264.8-.1 252.1-.1H48C21.5 0 0 21.5 0 48v416c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48V131.9c0-12.7-5.1-25-14.1-34zM332.1 128H256V51.9l76.1 76.1zM48 464V48h160v104c0 13.3 10.7 24 24 24h104v288H48z"></path></svg>',
@@ -205,7 +202,7 @@ class FileSelect {
     switch (mimetype) {
       case 'application':
         if (subtype === 'pdf') {
-          previewEl = await this.getPDF(url);
+          previewEl = await FileSelect.getPDF(url);
         } else {
           // default for other application types
         }
@@ -232,6 +229,8 @@ class FileSelect {
         previewEl.src = url;
         break;
     }
+    // add onload callback to revokeObjectUrls
+    if (previewEl) previewEl.onload = URL.revokeObjectURL(url);
     // 4. Create icon
     // if the client has added an icon for the file type, use it
     // otherwise return the default icon
@@ -239,12 +238,10 @@ class FileSelect {
     const iconBlob
       = this.svg[file.type] !== undefined
         ? await FileSelect.createSVGBlob(this.svg[file.type])
-        : await FileIcon.create(ext, this.colors);
+        : await this.fileIcon.createIcon(ext);
     const iconSrc = URL.createObjectURL(iconBlob);
     const iconEl = document.createElement('img');
     iconEl.src = iconSrc;
-    // add onload callback to revokeObjectUrls
-    previewEl.onload = URL.revokeObjectURL(url);
     iconEl.onload = URL.revokeObjectURL(iconBlob);
     // 5. Return preview object with preview and icon properties
     previewObj.preview = previewEl;
