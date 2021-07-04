@@ -1,6 +1,6 @@
 node_modules/
 babel.config.json
-src/
 logs/
+.eslintrc.json
 .DS_Store
 yalc.lock

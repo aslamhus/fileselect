@@ -262,7 +262,7 @@ class FileSelect {
     ) {
       blob = file;
     } else if (file.type === 'image/heic' || file.type === 'image/heif') {
-      blob = await this.getHEICBlob(file);
+      blob = await FileSelect.getHEICBlob(file);
     }
     // 2. createObjectURL from blob
     let url;
@@ -302,12 +302,10 @@ class FileSelect {
     // 4. Create icon
     // if the client has added an icon for the file type, use it
     // otherwise return the default icon
-    console.log(this);
-    console.log(this.getExtensionFromFilename);
-    const ext = this.getExtensionFromFilename(file.name);
+    const ext = FileSelect.getExtensionFromFilename(file.name);
     const iconBlob
       = this.svg[file.type] !== undefined
-        ? await this.createSVGBlob(this.svg[file.type])
+        ? await FileSelect.createSVGBlob(this.svg[file.type])
         : await this.createDefaultIcon(ext, this.colors);
     const iconSrc = URL.createObjectURL(iconBlob);
     const iconEl = document.createElement('img');
