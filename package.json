@@ -12,7 +12,7 @@
     "prebuild": "npx babel src --out-file lib/FileSelect.js --presets=@babel/preset-env",
     "build": "npx babel src/FileSelect.js --out-file build/FileSelect.min.js --presets=minify,@babel/preset-env",
     "postbuild": "npx babel src/FileSelect.js --out-file lib/FileSelect-es6.js",
-    "build-dev": "cp src/FileSelect.js build/FileSelect.min.js && yalc publish --push"
+    "build-dev": "cp -r src && yalc publish --push"
   },
   "repository": {
     "type": "git",
@@ -44,9 +44,12 @@
     "chai": "^4.3.4",
     "eslint": "^7.30.0",
     "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-prettier": "^3.4.0",
     "jsdom": "^16.6.0",
     "mocha": "^9.0.0",
+    "prettier": "^2.3.2",
     "regenerator-runtime": "^0.13.7"
   }
 }
