@@ -1,4 +1,5 @@
 const { expect } = require('chai');
+const assert = require('assert');
 
 const jsdom = require('jsdom');
 
@@ -148,24 +149,20 @@ describe('Read a file with an allowed type', async () => {
     });
     const FS = new FileSelect();
     const file = await FS.handleFile(f);
-    // let fSelect = new FileSelect();
-    // // console.log('allowedTypes', fSelect.allowedTypes);
-    // let file = { type: 'application/pdf'};
-    // let types = fSelect.checkFileTypes(file, ['application/pdf']);
     expect(typeof file.data).to.equal('string');
   });
 });
 
-describe('Read a file with an invalid type', async () => {
-  it('should return invalid', async () => {
+describe('Select an invalid file type', async () => {
+  it('should throw an Error', async () => {
     const f = new File([''], 'filename.jpeg', {
       type: 'image/jpeg',
       lastModified: '',
     });
-    const FS = new FileSelect('image/png');
-    const file = await FS.handleFile(f);
-    // handleFile returns errorObj
-    expect(file.valid).to.equal(false);
+    assert.throws(() => {
+      const FS = new FileSelect('image/png', { onInvalidType: invalid });
+      const file = FS.handleFile(f);
+    }, Error);
   });
 });
 
@@ -179,20 +176,19 @@ describe('Get a preview of an image', async () => {
     const file = await FS.handleFile(f);
     const preview = await FS.getPreview(f);
     console.log('preview', preview);
-    expect(preview.preview.tagName).to.equal('IMG');
+    expect(preview.tagName).to.equal('IMG');
   });
 });
 
-describe('Get a preview of a video', async () => {
-  it('should return tag name video', async () => {
+describe('Get a file icon for a selected file', async () => {
+  it('should return image tag name', async () => {
     const f = new File([''], 'filename.mp4', {
       type: 'video/mp4',
       lastModified: '',
     });
     const FS = new FileSelect();
     const file = await FS.handleFile(f);
-    const preview = await FS.getPreview(f);
-    console.log('preview', preview.preview.tagName);
-    expect(preview.preview.tagName).to.equal('VIDEO');
+    const icon = await FS.getIcon(f);
+    expect(icon.tagName).to.equal('IMG');
   });
 });
