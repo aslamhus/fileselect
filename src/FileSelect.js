@@ -25,7 +25,7 @@
 
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
-import FileIcon from './FileIcon';
+import FileIcon from '@aslamhus/fileicon';
 
 class FileSelect {
   constructor(
@@ -39,7 +39,10 @@ class FileSelect {
       theme: null,
     }
   ) {
-    this.fileIcon = new FileIcon(options.colors, options.theme);
+    this.fileIcon = new FileIcon({
+      colors: options.colors,
+      theme: options.theme,
+    });
     this.svg = {
       default:
         '<svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="file" class="svg-inline--fa fa-file fa-w-12" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="currentColor" d="M369.9 97.9L286 14C277 5 264.8-.1 252.1-.1H48C21.5 0 0 21.5 0 48v416c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48V131.9c0-12.7-5.1-25-14.1-34zM332.1 128H256V51.9l76.1 76.1zM48 464V48h160v104c0 13.3 10.7 24 24 24h104v288H48z"></path></svg>',
@@ -52,10 +55,10 @@ class FileSelect {
       // find fileInput tag, if not found create
       this.fileInput = fileInput;
       if (!this.fileInput?.tagName) {
-        this.fileInput
-          = document.querySelector(fileInput)
-          || document.querySelector('input[type=file]')
-          || this.createFileInput();
+        this.fileInput =
+          document.querySelector(fileInput) ||
+          document.querySelector('input[type=file]') ||
+          this.createFileInput();
       }
     }
     // get allowed types
@@ -80,8 +83,7 @@ class FileSelect {
       e.stopPropagation();
       e.preventDefault();
       [file] = e.target.files;
-      alert('file!');
-      console.log('file', file);
+      console.log('FileSelect - file', file);
     } else {
       file = e;
     }
@@ -147,8 +149,8 @@ class FileSelect {
       }
       const f = file;
       // give file a unique filename based on date
-      f.uuid
-        = file.name !== undefined
+      f.uuid =
+        file.name !== undefined
           ? file.name.replace(/(?=\.[^.]+$)/, `-${Date.now()}`)
           : Date.now();
       // check filetype is allowed
@@ -184,18 +186,22 @@ class FileSelect {
     // 1. Get blobs
     // if the type is not text/plain, image/heic, image, video or pdf
     // then create default svg file
-    if (
-      mimetype === 'image'
-      || mimetype === 'video'
-      || subtype === 'pdf'
-      || file.type === 'text/plain'
+    if (file.type === 'image/heic' || file.type === 'image/heif') {
+      blob = await FileSelect.getHEICBlob(file);
+    } else if (
+      mimetype === 'image' ||
+      mimetype === 'video' ||
+      mimetype === 'audio' ||
+      subtype === 'pdf' ||
+      file.type === 'text/plain'
     ) {
       blob = file;
-    } else if (file.type === 'image/heic' || file.type === 'image/heif') {
-      blob = await FileSelect.getHEICBlob(file);
+    } else {
+      console.log(`unrecognized file type: ${file.type}`);
+      blob = file;
     }
     // 2. createObjectURL from blob
-    let url;
+    let url = file;
     if (blob) url = URL.createObjectURL(blob);
     // 3. create preview Element from URL object
     let previewEl;
@@ -224,29 +230,62 @@ class FileSelect {
         previewEl.src = url;
         break;
 
+      case 'audio':
+        previewEl = FileSelect.createAudioElement(url, file.type);
+        break;
+
       case 'image':
         previewEl = document.createElement('img');
         previewEl.src = url;
         break;
     }
-    // add onload callback to revokeObjectUrls
-    if (previewEl) previewEl.onload = URL.revokeObjectURL(url);
+    // revokeObjectUrls onload (except for audio which is handled in the createAudioElement method
+    if (previewEl && mimetype !== 'audio') {
+      previewEl.onload = URL.revokeObjectURL(url);
+    }
     // 4. Create icon
-    // if the client has added an icon for the file type, use it
-    // otherwise return the default icon
+    let icon;
     const ext = FileSelect.getExtensionFromFilename(file.name);
-    const iconBlob
-      = this.svg[file.type] !== undefined
-        ? await FileSelect.createSVGBlob(this.svg[file.type])
-        : await this.fileIcon.createIcon(ext);
-    const iconSrc = URL.createObjectURL(iconBlob);
-    const iconEl = document.createElement('img');
-    iconEl.src = iconSrc;
-    iconEl.onload = URL.revokeObjectURL(iconBlob);
+    // if there is an SVG default icon or SVG icon for the file type, use that
+    /* eslint no-prototype-builtins: "off" */
+    if (
+      this.svg.hasOwnProperty('default') ||
+      this.svg.hasOwnProperty(mimetype)
+    ) {
+      // a default svg icon will always be used over specific types
+      const svgIcon = this.svg.default || this.svg[mimetype];
+      const svgBlob = await FileSelect.createSVGBlob(svgIcon);
+      icon = document.createElement('img');
+      icon.src = URL.createObjectURL(svgBlob);
+      icon.onload = URL.revokeObjectURL(svgBlob);
+    } else {
+      // otherwise create default icon with @aslamhus/fileicon
+      icon = await this.fileIcon.create(ext);
+    }
     // 5. Return preview object with preview and icon properties
     previewObj.preview = previewEl;
-    previewObj.icon = iconEl;
+    previewObj.icon = icon;
     return previewObj;
+  }
+
+  static createAudioElement(url, type) {
+    const aud = document.createElement('audio');
+    aud.controls = 'controls';
+    aud.oncanplaythrough = () => {
+      URL.revokeObjectURL(url);
+    };
+    aud.onplay = () => {
+      document.querySelectorAll('audio').forEach((audio) => {
+        if (audio !== aud) {
+          audio.pause();
+        }
+      });
+    };
+    const src = document.createElement('source');
+    src.src = url;
+    src.type = type;
+    aud.append(src);
+    return aud;
   }
 
   static getExtensionFromFilename(filename) {
@@ -277,38 +316,40 @@ class FileSelect {
   }
 
   static getPDF(url) {
-    return new Promise((resolve) => import(/* webpackChunkName: "pdjs" */ 'pdfjs-dist/webpack').then(
-      (pdfjsLib) => {
-        if (typeof pdfjsLib === 'undefined') {
-          throw new Error("couldn't initialize pdf.js library");
-        }
-        const loadingTask = pdfjsLib.getDocument(url);
-        loadingTask.promise.then((pdf) => {
-          pdf.getPage(1).then((page) => {
-            const scale = 1;
-            const viewport = page.getViewport({ scale });
-            const canvas = document.createElement('canvas');
-            canvas.style.cssText = `
+    return new Promise((resolve) =>
+      import(/* webpackChunkName: "pdjs" */ 'pdfjs-dist/webpack').then(
+        (pdfjsLib) => {
+          if (typeof pdfjsLib === 'undefined') {
+            throw new Error("couldn't initialize pdf.js library");
+          }
+          const loadingTask = pdfjsLib.getDocument(url);
+          loadingTask.promise.then((pdf) => {
+            pdf.getPage(1).then((page) => {
+              const scale = 1;
+              const viewport = page.getViewport({ scale });
+              const canvas = document.createElement('canvas');
+              canvas.style.cssText = `
                           position:relative;
                           width:100%;
                           height:auto;
                           margin:0px auto;
                           top:50%;
                           transform: translateY(-50%);`;
-            const context = canvas.getContext('2d');
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
+              const context = canvas.getContext('2d');
+              canvas.height = viewport.height;
+              canvas.width = viewport.width;
 
-            const renderContext = {
-              canvasContext: context,
-              viewport,
-            };
-            page.render(renderContext);
-            resolve(canvas);
+              const renderContext = {
+                canvasContext: context,
+                viewport,
+              };
+              page.render(renderContext);
+              resolve(canvas);
+            });
           });
-        });
-      }
-    ));
+        }
+      )
+    );
   }
 
   checkFileTypes({ type }, allowedTypes) {

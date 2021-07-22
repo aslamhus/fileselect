@@ -1,89 +1,17 @@
 <!DOCTYPE html>
 <body>
-
-
-
+  <h1>FileSelect Test</h1>
 </body>
-<script>
-    let time = performance.now();
-let canvas = document.createElement('canvas');
-
-            canvas.width = 384;
-            canvas.height = 512;
-            canvas.width = canvas.width 
-            
-            var ctx = canvas.getContext('2d');
-            ctx.fillStyle = "#CCCCCC";
-            ctx.fillRect(0,0,canvas.width,canvas.height);
-
-            
-            // ctx.fillRect(374, 0, 10, 512);
-
-            ctx.fillStyle = "#000000";
-            this.draw(canvas, ctx,"#000000");
-            
-            let x = canvas.width /2;
-            let y = canvas.height /2;
-            // draw rectangle
-
-            ctx.fillStyle = "#333333";
-            ctx.fillRect(72, canvas.height - 190, 270, 120);
-
-            // draw type text
-
-            let subtype = 'RTF';
-            ctx.fillStyle = "#FFFFFF";
-            ctx.font = "70px Arial";
-            ctx.font="normal normal normal normal 15px/28px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-            ctx.font="small-caps bold 80px 'HelveticaNeue',Helvetica,Arial,sans-serif";
-            ctx.textBaseline = 'middle';
-            ctx.textAlign = "end"; 
-            console.log('type',subtype)
-            ctx.fillText(subtype, 320, canvas.height - 190 + 60)
-            // resolve(canvas);
-
-            document.body.append(canvas);
-
-
-            function draw(canvas, ctx, hexcolor){
-        ctx.save();
-        ctx.strokeStyle="rgba(0,0,0,1)";
-        ctx.miterLimit=4;
-        
-        ctx.scale(0.75,0.75);
-        let x = (canvas.width - (canvas.width * 0.75)) * 0.75;
-        console.log('x',x)
-        let y = (canvas.height - (canvas.height * 0.75)) * 0.75;
-        ctx.translate(x, y);
-        ctx.scale(1,1);
-        ctx.save();
-        ctx.fillStyle= hexcolor || "#000000";
-        ctx.beginPath();
-        ctx.moveTo(224,136);
-        ctx.lineTo(224,0);
-        ctx.lineTo(24,0);
-        ctx.bezierCurveTo(10.7,0,0,10.7,0,24);
-        ctx.lineTo(0,488);
-        ctx.bezierCurveTo(0,501.3,10.7,512,24,512);
-        ctx.lineTo(360,512);
-        ctx.bezierCurveTo(373.3,512,384,501.3,384,488);
-        ctx.lineTo(384,160);
-        ctx.lineTo(248,160);
-        ctx.bezierCurveTo(234.8,160,224,149.2,224,136);
-        ctx.closePath();
-        ctx.moveTo(384,121.9);
-        ctx.lineTo(384,128);
-        ctx.lineTo(256,128);
-        ctx.lineTo(256,0);
-        ctx.lineTo(262.1,0);
-        ctx.bezierCurveTo(268.5,0,274.6,2.5,279.1,7);
-        ctx.lineTo(377,105);
-        ctx.bezierCurveTo(381.5,109.5,384,115.6,384,121.9);
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
-        ctx.restore();
-        ctx.restore();
+<script type="importmap">
+  {
+    "imports": {
+      "core-js/stable": "../node_modules/core-js/stable/index.js",
+      "regenerator-runtime/runtime": "../node_modules/regenerator-runtime/runtime.js",
+      "@aslamhus/fileicon": "../node_modules/@aslamhus/fileicon/dist/FileIcon.mjs"
     }
-    document.write('<br/><br/> script time: ' + (performance.now() - time).toFixed(4) + 'ms')
+  }
+</script>
+<script type="module">
+  import * as FileSelect from '../lib/FileSelect.mjs';
+  console.log(FileSelect);
 </script>
