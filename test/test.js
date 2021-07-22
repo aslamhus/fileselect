@@ -9,9 +9,13 @@ const dom = new JSDOM(
 global.window = dom.window;
 global.document = dom.window.document;
 global.File = dom.window.File;
+global.Blob = dom.window.Blob;
 global.FileReader = dom.window.FileReader;
+global.URL = dom.window.URL;
+global.URL.createObjectURL = function (blob) {};
+global.URL.revokeObjectURL = function (blob) {};
 
-const FileSelect = require('../lib/FileSelect').default;
+const FileSelect = require('../build/FileSelect').default;
 
 describe('pass valid selector "#myInput" to constructor', async () => {
   it('should return valid file input element', () => {
@@ -167,7 +171,6 @@ describe('Read a file with an invalid type', async () => {
 
 describe('Get a preview of an image', async () => {
   it('should return tag name IMG', async () => {
-    global.URL.createObjectURL = function (blob) {};
     const f = new File([''], 'filename.jpeg', {
       type: 'image/jpeg',
       lastModified: '',
@@ -175,14 +178,13 @@ describe('Get a preview of an image', async () => {
     const FS = new FileSelect();
     const file = await FS.handleFile(f);
     const preview = await FS.getPreview(f);
-    console.log('preview', preview.tagName);
-    expect(preview.tagName).to.equal('IMG');
+    console.log('preview', preview);
+    expect(preview.preview.tagName).to.equal('IMG');
   });
 });
 
 describe('Get a preview of a video', async () => {
   it('should return tag name video', async () => {
-    global.URL.createObjectURL = function (blob) {};
     const f = new File([''], 'filename.mp4', {
       type: 'video/mp4',
       lastModified: '',
@@ -190,7 +192,7 @@ describe('Get a preview of a video', async () => {
     const FS = new FileSelect();
     const file = await FS.handleFile(f);
     const preview = await FS.getPreview(f);
-    console.log('preview', preview.tagName);
-    expect(preview.tagName).to.equal('VIDEO');
+    console.log('preview', preview.preview.tagName);
+    expect(preview.preview.tagName).to.equal('VIDEO');
   });
 });

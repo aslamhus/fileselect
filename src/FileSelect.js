@@ -354,7 +354,7 @@ class FileSelect {
 
   checkFileTypes({ type }, allowedTypes) {
     if (allowedTypes === '*') return { valid: true };
-    const validObj = this.getTypeList(allowedTypes || this.allowedTypes);
+    const validObj = FileSelect.getTypeList(allowedTypes || this.allowedTypes);
     const mediaType = type.split('/')[0];
     if (validObj.types.includes(`${mediaType}/*`)) return { valid: true };
     if (validObj.types.includes(type)) {
