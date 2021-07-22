@@ -62,6 +62,7 @@ var FileSelect = /*#__PURE__*/function () {
     this.svg = {
       "default": '<svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="file" class="svg-inline--fa fa-file fa-w-12" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="currentColor" d="M369.9 97.9L286 14C277 5 264.8-.1 252.1-.1H48C21.5 0 0 21.5 0 48v416c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48V131.9c0-12.7-5.1-25-14.1-34zM332.1 128H256V51.9l76.1 76.1zM48 464V48h160v104c0 13.3 10.7 24 24 24h104v288H48z"></path></svg>'
     };
+    this.onInvalidType = options.onInvalidType;
     this.validateArguments(allowedTypes, options);
   }
 
@@ -152,7 +153,6 @@ var FileSelect = /*#__PURE__*/function () {
 
       return new Promise(function (resolve, reject) {
         if (!_this.fileInput) {
-          console.error("Couldn't find file input element.");
           reject(new Error('Invalid Argument Exception - no file element found.'));
         } // prevents firing twice in case <input> tag is nested within target element
 
@@ -163,7 +163,15 @@ var FileSelect = /*#__PURE__*/function () {
 
 
         _this.fileInput.onchange = function (e) {
-          var files = e.target.files;
+          var files = e.target.files; // check each file type is allowed
+
+          files.forEach(function (file) {
+            var types = _this.checkFileTypes(file, _this.allowedTypes);
+
+            if (!types.valid) {
+              reject(new Error(types.message));
+            }
+          });
           resolve(files);
         }; // trigger file selection.
 
@@ -239,16 +247,73 @@ var FileSelect = /*#__PURE__*/function () {
 
         f.uuid = file.name !== undefined ? file.name.replace(/(?=\.[^.]+$)/, "-".concat(Date.now())) : Date.now(); // check filetype is allowed
 
-        var checkType = _this3.checkFileTypes(file, _this3.allowedTypes || allowedTypes);
+        var types = _this3.checkFileTypes(file, _this3.allowedTypes || allowedTypes);
 
-        if (!checkType.valid) {
-          resolve(checkType);
+        if (!types.valid) {
+          reject(new Error(types.message));
         } // read the file
 
 
         _this3.readFile(file, resolve, reject);
       });
     }
+  }, {
+    key: "getIcon",
+    value: function () {
+      var _getIcon = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(file) {
+        var icon, _file$type$split, _file$type$split2, mimetype, ext, svgIcon, svgBlob;
+
+        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                _file$type$split = file.type.split('/'), _file$type$split2 = _slicedToArray(_file$type$split, 1), mimetype = _file$type$split2[0];
+                ext = FileSelect.getExtensionFromFilename(file.name); // if there is an SVG default icon or SVG icon for the file type, use that
+
+                /* eslint no-prototype-builtins: "off" */
+
+                if (!(this.svg.hasOwnProperty('default') || this.svg.hasOwnProperty(mimetype))) {
+                  _context3.next = 12;
+                  break;
+                }
+
+                // a default svg icon will always be used over specific types
+                svgIcon = this.svg["default"] || this.svg[mimetype];
+                _context3.next = 6;
+                return FileSelect.createSVGBlob(svgIcon);
+
+              case 6:
+                svgBlob = _context3.sent;
+                icon = document.createElement('img');
+                icon.src = URL.createObjectURL(svgBlob);
+                icon.onload = URL.revokeObjectURL(svgBlob);
+                _context3.next = 15;
+                break;
+
+              case 12:
+                _context3.next = 14;
+                return this.fileIcon.create(ext);
+
+              case 14:
+                icon = _context3.sent;
+
+              case 15:
+                return _context3.abrupt("return", icon);
+
+              case 16:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3, this);
+      }));
+
+      function getIcon(_x3) {
+        return _getIcon.apply(this, arguments);
+      }
+
+      return getIcon;
+    }()
     /**
      * Gets a blob URL for the selected file.
      * If the file is a PDF or a TEXT file, it returns a predetermined svg icon (as a blob url)
@@ -259,43 +324,39 @@ var FileSelect = /*#__PURE__*/function () {
   }, {
     key: "getPreview",
     value: function () {
-      var _getPreview = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(file) {
-        var previewObj, blob, _file$type$split, _file$type$split2, mimetype, subtype, url, previewEl, text, icon, ext, svgIcon, svgBlob;
+      var _getPreview = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(file) {
+        var blob, _file$type$split3, _file$type$split4, mimetype, subtype, url, previewEl, text;
 
-        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+        return regeneratorRuntime.wrap(function _callee4$(_context4) {
           while (1) {
-            switch (_context3.prev = _context3.next) {
+            switch (_context4.prev = _context4.next) {
               case 0:
                 if (!(!file || _typeof(file) !== 'object' || !(file instanceof File))) {
-                  _context3.next = 2;
+                  _context4.next = 2;
                   break;
                 }
 
                 throw new Error('Type Error. getPreview expected file object');
 
               case 2:
-                previewObj = {
-                  preview: null,
-                  icon: null
-                };
-                _file$type$split = file.type.split('/'), _file$type$split2 = _slicedToArray(_file$type$split, 2), mimetype = _file$type$split2[0], subtype = _file$type$split2[1]; // 1. Get blobs
+                _file$type$split3 = file.type.split('/'), _file$type$split4 = _slicedToArray(_file$type$split3, 2), mimetype = _file$type$split4[0], subtype = _file$type$split4[1]; // 1. Get blobs
                 // if the type is not text/plain, image/heic, image, video or pdf
                 // then create default svg file
 
                 if (!(file.type === 'image/heic' || file.type === 'image/heif')) {
-                  _context3.next = 10;
+                  _context4.next = 9;
                   break;
                 }
 
-                _context3.next = 7;
+                _context4.next = 6;
                 return FileSelect.getHEICBlob(file);
 
-              case 7:
-                blob = _context3.sent;
-                _context3.next = 11;
+              case 6:
+                blob = _context4.sent;
+                _context4.next = 10;
                 break;
 
-              case 10:
+              case 9:
                 if (mimetype === 'image' || mimetype === 'video' || mimetype === 'audio' || subtype === 'pdf' || file.type === 'text/plain') {
                   blob = file;
                 } else {
@@ -303,117 +364,83 @@ var FileSelect = /*#__PURE__*/function () {
                   blob = file;
                 }
 
-              case 11:
+              case 10:
                 // 2. createObjectURL from blob
                 url = file;
                 if (blob) url = URL.createObjectURL(blob); // 3. create preview Element from URL object
 
-                _context3.t0 = mimetype;
-                _context3.next = _context3.t0 === 'application' ? 16 : _context3.t0 === 'text' ? 23 : _context3.t0 === 'video' ? 33 : _context3.t0 === 'audio' ? 36 : _context3.t0 === 'image' ? 38 : 41;
+                _context4.t0 = mimetype;
+                _context4.next = _context4.t0 === 'application' ? 15 : _context4.t0 === 'text' ? 22 : _context4.t0 === 'video' ? 32 : _context4.t0 === 'audio' ? 35 : _context4.t0 === 'image' ? 37 : 40;
                 break;
 
-              case 16:
+              case 15:
                 if (!(subtype === 'pdf')) {
-                  _context3.next = 22;
+                  _context4.next = 21;
                   break;
                 }
 
-                _context3.next = 19;
+                _context4.next = 18;
                 return FileSelect.getPDF(url);
 
-              case 19:
-                previewEl = _context3.sent;
-                _context3.next = 22;
+              case 18:
+                previewEl = _context4.sent;
+                _context4.next = 21;
                 break;
 
-              case 22:
-                return _context3.abrupt("break", 41);
+              case 21:
+                return _context4.abrupt("break", 40);
 
-              case 23:
+              case 22:
                 if (!(subtype === 'plain')) {
-                  _context3.next = 32;
+                  _context4.next = 31;
                   break;
                 }
 
-                _context3.next = 26;
+                _context4.next = 25;
                 return file.text();
 
-              case 26:
-                text = _context3.sent;
+              case 25:
+                text = _context4.sent;
                 previewEl = document.createElement('div');
                 previewEl.style.padding = '15px';
                 previewEl.textContent = text;
-                _context3.next = 32;
+                _context4.next = 31;
                 break;
 
-              case 32:
-                return _context3.abrupt("break", 41);
+              case 31:
+                return _context4.abrupt("break", 40);
 
-              case 33:
+              case 32:
                 previewEl = document.createElement('video');
                 previewEl.src = url;
-                return _context3.abrupt("break", 41);
+                return _context4.abrupt("break", 40);
 
-              case 36:
+              case 35:
                 previewEl = FileSelect.createAudioElement(url, file.type);
-                return _context3.abrupt("break", 41);
+                return _context4.abrupt("break", 40);
 
-              case 38:
+              case 37:
                 previewEl = document.createElement('img');
                 previewEl.src = url;
-                return _context3.abrupt("break", 41);
+                return _context4.abrupt("break", 40);
 
-              case 41:
+              case 40:
                 // revokeObjectUrls onload (except for audio which is handled in the createAudioElement method
                 if (previewEl && mimetype !== 'audio') {
                   previewEl.onload = URL.revokeObjectURL(url);
-                } // 4. Create icon
-
-
-                ext = FileSelect.getExtensionFromFilename(file.name); // if there is an SVG default icon or SVG icon for the file type, use that
-
-                /* eslint no-prototype-builtins: "off" */
-
-                if (!(this.svg.hasOwnProperty('default') || this.svg.hasOwnProperty(mimetype))) {
-                  _context3.next = 53;
-                  break;
                 }
 
-                // a default svg icon will always be used over specific types
-                svgIcon = this.svg["default"] || this.svg[mimetype];
-                _context3.next = 47;
-                return FileSelect.createSVGBlob(svgIcon);
+                return _context4.abrupt("return", previewEl);
 
-              case 47:
-                svgBlob = _context3.sent;
-                icon = document.createElement('img');
-                icon.src = URL.createObjectURL(svgBlob);
-                icon.onload = URL.revokeObjectURL(svgBlob);
-                _context3.next = 56;
-                break;
-
-              case 53:
-                _context3.next = 55;
-                return this.fileIcon.create(ext);
-
-              case 55:
-                icon = _context3.sent;
-
-              case 56:
-                // 5. Return preview object with preview and icon properties
-                previewObj.preview = previewEl;
-                previewObj.icon = icon;
-                return _context3.abrupt("return", previewObj);
-
-              case 59:
+              case 42:
               case "end":
-                return _context3.stop();
+                return _context4.stop();
             }
           }
-        }, _callee3, this);
+        }, _callee4);
       }));
 
-      function getPreview(_x3) {
+      function getPreview(_x4) {
         return _getPreview.apply(this, arguments);
       }
 
@@ -438,8 +465,8 @@ var FileSelect = /*#__PURE__*/function () {
         validObj.valid = false; // call optional client defined function
 
         if (this.onInvalidType instanceof Function) {
-          this.onInvalidType.call(validObj, validObj.message);
-        } else console.error(validObj.message);
+          this.onInvalidType.call(null, validObj);
+        }
       }
 
       return validObj;
@@ -553,22 +580,22 @@ var FileSelect = /*#__PURE__*/function () {
   }, {
     key: "getHEICBlob",
     value: function () {
-      var _getHEICBlob = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(file) {
+      var _getHEICBlob = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(file) {
         var _yield$import, heic2any, blob;
 
-        return regeneratorRuntime.wrap(function _callee4$(_context4) {
+        return regeneratorRuntime.wrap(function _callee5$(_context5) {
           while (1) {
-            switch (_context4.prev = _context4.next) {
+            switch (_context5.prev = _context5.next) {
               case 0:
-                _context4.next = 2;
+                _context5.next = 2;
                 return Promise.resolve().then(function () {
                   return _interopRequireWildcard(require('heic2any'));
                 });
 
               case 2:
-                _yield$import = _context4.sent;
+                _yield$import = _context5.sent;
                 heic2any = _yield$import["default"];
-                _context4.next = 6;
+                _context5.next = 6;
                 return heic2any({
                   blob: file,
                   toType: 'image/jpg'
@@ -580,18 +607,18 @@ var FileSelect = /*#__PURE__*/function () {
                 });
 
               case 6:
-                blob = _context4.sent;
-                return _context4.abrupt("return", blob);
+                blob = _context5.sent;
+                return _context5.abrupt("return", blob);
 
               case 8:
               case "end":
-                return _context4.stop();
+                return _context5.stop();
             }
           }
-        }, _callee4);
+        }, _callee5);
       }));
 
-      function getHEICBlob(_x4) {
+      function getHEICBlob(_x5) {
         return _getHEICBlob.apply(this, arguments);
       }
 

@@ -19,7 +19,7 @@
  *      - a client defined function to be called when the file has been read.
  * @param {Function} options.onInvalidType
  *      - a client defined function to be called when there is an invalid type
- * @param {Function} options.iconColors
+ * @param {Function} options.colors
  *      icon colors. For more info see documentation at [createDefaultIcon]{@link createDefaultIcon}
  */
 
@@ -47,6 +47,7 @@ class FileSelect {
       default:
         '<svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="file" class="svg-inline--fa fa-file fa-w-12" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="currentColor" d="M369.9 97.9L286 14C277 5 264.8-.1 252.1-.1H48C21.5 0 0 21.5 0 48v416c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48V131.9c0-12.7-5.1-25-14.1-34zM332.1 128H256V51.9l76.1 76.1zM48 464V48h160v104c0 13.3 10.7 24 24 24h104v288H48z"></path></svg>',
     };
+    this.onInvalidType = options.onInvalidType;
     this.validateArguments(allowedTypes, options);
   }
 
@@ -97,7 +98,6 @@ class FileSelect {
   select() {
     return new Promise((resolve, reject) => {
       if (!this.fileInput) {
-        console.error("Couldn't find file input element.");
         reject(
           new Error('Invalid Argument Exception - no file element found.')
         );
@@ -107,6 +107,13 @@ class FileSelect {
       // handles files, resolves selectImage's promise when the files are read.
       this.fileInput.onchange = (e) => {
         const { files } = e.target;
+        // check each file type is allowed
+        files.forEach((file) => {
+          const types = this.checkFileTypes(file, this.allowedTypes);
+          if (!types.valid) {
+            reject(new Error(types.message));
+          }
+        });
         resolve(files);
       };
       // trigger file selection.
@@ -154,17 +161,39 @@ class FileSelect {
           ? file.name.replace(/(?=\.[^.]+$)/, `-${Date.now()}`)
           : Date.now();
       // check filetype is allowed
-
-      const checkType = this.checkFileTypes(
+      const types = this.checkFileTypes(
         file,
         this.allowedTypes || allowedTypes
       );
-      if (!checkType.valid) {
-        resolve(checkType);
+      if (!types.valid) {
+        reject(new Error(types.message));
       }
       // read the file
       this.readFile(file, resolve, reject);
     });
+  }
+
+  async getIcon(file) {
+    let icon;
+    const [mimetype] = file.type.split('/');
+    const ext = FileSelect.getExtensionFromFilename(file.name);
+    // if there is an SVG default icon or SVG icon for the file type, use that
+    /* eslint no-prototype-builtins: "off" */
+    if (
+      this.svg.hasOwnProperty('default') ||
+      this.svg.hasOwnProperty(mimetype)
+    ) {
+      // a default svg icon will always be used over specific types
+      const svgIcon = this.svg.default || this.svg[mimetype];
+      const svgBlob = await FileSelect.createSVGBlob(svgIcon);
+      icon = document.createElement('img');
+      icon.src = URL.createObjectURL(svgBlob);
+      icon.onload = URL.revokeObjectURL(svgBlob);
+    } else {
+      // otherwise create default icon with @aslamhus/fileicon
+      icon = await this.fileIcon.create(ext);
+    }
+    return icon;
   }
 
   /**
@@ -177,10 +206,6 @@ class FileSelect {
     if (!file || typeof file !== 'object' || !(file instanceof File)) {
       throw new Error('Type Error. getPreview expected file object');
     }
-    const previewObj = {
-      preview: null,
-      icon: null,
-    };
     let blob;
     const [mimetype, subtype] = file.type.split('/');
     // 1. Get blobs
@@ -210,7 +235,7 @@ class FileSelect {
         if (subtype === 'pdf') {
           previewEl = await FileSelect.getPDF(url);
         } else {
-          // default for other application types
+          // default for other application subtypes
         }
         break;
 
@@ -243,29 +268,7 @@ class FileSelect {
     if (previewEl && mimetype !== 'audio') {
       previewEl.onload = URL.revokeObjectURL(url);
     }
-    // 4. Create icon
-    let icon;
-    const ext = FileSelect.getExtensionFromFilename(file.name);
-    // if there is an SVG default icon or SVG icon for the file type, use that
-    /* eslint no-prototype-builtins: "off" */
-    if (
-      this.svg.hasOwnProperty('default') ||
-      this.svg.hasOwnProperty(mimetype)
-    ) {
-      // a default svg icon will always be used over specific types
-      const svgIcon = this.svg.default || this.svg[mimetype];
-      const svgBlob = await FileSelect.createSVGBlob(svgIcon);
-      icon = document.createElement('img');
-      icon.src = URL.createObjectURL(svgBlob);
-      icon.onload = URL.revokeObjectURL(svgBlob);
-    } else {
-      // otherwise create default icon with @aslamhus/fileicon
-      icon = await this.fileIcon.create(ext);
-    }
-    // 5. Return preview object with preview and icon properties
-    previewObj.preview = previewEl;
-    previewObj.icon = icon;
-    return previewObj;
+    return previewEl;
   }
 
   static createAudioElement(url, type) {
@@ -363,8 +366,8 @@ class FileSelect {
       validObj.valid = false;
       // call optional client defined function
       if (this.onInvalidType instanceof Function) {
-        this.onInvalidType.call(validObj, validObj.message);
-      } else console.error(validObj.message);
+        this.onInvalidType.call(null, validObj);
+      }
     }
     return validObj;
   }

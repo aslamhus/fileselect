@@ -1,7 +1,6 @@
 {
   "name": "@aslamhus/fileselect",
-  "version": "1.1.0",
-  "module": "true",
+  "version": "1.2.0",
   "description": "Select and read a file for preview/upload",
   "main": "./build/FileSelect.js",
   "directories": {
@@ -21,7 +20,7 @@
     "select"
   ],
   "author": "Aslam Husain",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/aslamhus/fileselect.gi/issues"
   },
@@ -39,6 +38,7 @@
     "@babel/plugin-proposal-optional-chaining": "^7.14.5",
     "@babel/plugin-transform-modules-commonjs": "^7.14.5",
     "@babel/preset-env": "^7.14.5",
+    "assert": "^2.0.0",
     "babel-preset-minify": "^0.5.1",
     "chai": "^4.3.4",
     "eslint": "^7.31.0",
