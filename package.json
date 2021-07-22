@@ -1,6 +1,6 @@
 {
   "name": "@aslamhus/fileselect",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "module": "true",
   "description": "Select and read a file for preview/upload",
   "main": "./build/FileSelect.js",
@@ -9,10 +9,8 @@
   },
   "scripts": {
     "test": "npx babel src --out-file build/FileSelect.js --presets=@babel/preset-env --plugins @babel/plugin-transform-modules-commonjs && mocha",
-    "prebuild": "npx babel src/FileSelect.js --out-file build/FileSelect.js --presets @babel/preset-env --plugins @babel/plugin-transform-modules-commonjs",
-    "build": "npx babel src/FileSelect.js --out-file build/FileSelect.min.js --presets=minify,@babel/preset-env --plugins @babel/plugin-transform-modules-commonjs",
-    "postbuild": "npx babel src/FileSelect.js --out-file lib/FileSelect.mjs",
-    "build-dev": "rm build/FileSelect.js && cp ../FileSelect/src/FileSelect.js ../FileSelect/build/FileSelect.js && yalc publish --push"
+    "build": "bin/build.sh",
+    "build-dev": "bin/build-dev.sh"
   },
   "repository": {
     "type": "git",
@@ -29,8 +27,7 @@
   },
   "homepage": "https://github.com/aslamhus/fileselect.gi#readme",
   "dependencies": {
-    "@aslamhus/fileicon": "file:.yalc/@aslamhus/fileicon",
-    "browserify": "^17.0.0",
+    "@aslamhus/fileicon": "^1.0.5",
     "core-js": "^3.14.0",
     "heic2any": "^0.0.3",
     "pdfjs-dist": "^2.8.335",
