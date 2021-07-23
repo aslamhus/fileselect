@@ -1,7 +1,3 @@
-/* eslint-disable default-case */
-
-/* eslint-disable comma-dangle */
-
 /**
  * File Select
  * v 1.0.4
@@ -27,8 +23,7 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import FileIcon from '@aslamhus/fileicon';
-
-class FileSelect {
+export default class FileSelect {
   constructor(allowedTypes = '*', options = {
     fileInput: true,
     onReaderProgress: null,
@@ -486,5 +481,3 @@ class FileSelect {
   }
 
 }
-
-export default FileSelect;

@@ -1,9 +1,10 @@
-node_modules/
-babel.config.json
-logs/
-.eslintrc.json
-.DS_Store
-yalc.lock
-.yalc
 .npmignore
+src
+node_modules
+babel.config.json
+yalc.lock
+logs
+.eslintrc.json
+.eslintignore
 bin
+.DS_Store

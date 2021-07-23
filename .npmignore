@@ -1,5 +1,10 @@
+
+.gitignore
 src
 node_modules
 babel.config.json
-.gitignore
 yalc.lock
+logs
+.eslintrc.json
+.eslintignore
+bin

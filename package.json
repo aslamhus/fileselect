@@ -7,9 +7,11 @@
     "test": "test"
   },
   "scripts": {
-    "test": "npx babel src --out-file build/FileSelect.js --presets=@babel/preset-env --plugins @babel/plugin-transform-modules-commonjs && mocha",
+    "test": "bin/build.sh && mocha",
     "build": "bin/build.sh",
-    "build-dev": "bin/build-dev.sh"
+    "build-dev": "bin/build-dev.sh",
+    "webpack": "rm -rf lib && webpack --config ./src/build/webpack.common.js && yalc publish --push",
+    "umd": "npx babel src/FileSelect.js --out-file build/FileSelect-umd.js --presets=@babel/preset-env --plugins @babel/plugin-transform-modules-umd"
   },
   "repository": {
     "type": "git",
@@ -37,18 +39,32 @@
     "@babel/core": "^7.14.6",
     "@babel/plugin-proposal-optional-chaining": "^7.14.5",
     "@babel/plugin-transform-modules-commonjs": "^7.14.5",
+    "@babel/plugin-transform-modules-umd": "^7.14.5",
     "@babel/preset-env": "^7.14.5",
     "assert": "^2.0.0",
+    "babel-loader": "^8.2.2",
+    "babel-plugin-bare-import-rewrite": "^2.0.0",
     "babel-preset-minify": "^0.5.1",
     "chai": "^4.3.4",
+    "css-loader": "^6.2.0",
     "eslint": "^7.31.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-prettier": "^3.4.0",
+    "file-loader": "^6.2.0",
+    "html-loader": "^2.1.2",
+    "html-webpack-plugin": "^5.3.2",
     "jsdom": "^16.6.0",
     "mocha": "^9.0.0",
     "prettier": "^2.3.2",
-    "regenerator-runtime": "^0.13.7"
+    "regenerator-runtime": "^0.13.7",
+    "style-loader": "^3.2.1",
+    "terser-webpack-plugin": "^5.1.4",
+    "url-loader": "^4.1.1",
+    "webpack": "^5.46.0",
+    "webpack-cli": "^4.7.2",
+    "webpack-dev-server": "^3.11.2",
+    "webpack-merge": "^5.8.0"
   }
 }

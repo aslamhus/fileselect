@@ -1,12 +1,12 @@
 # @aslamhus/fileselect
 
-A simple library for selecting, reading, and creating previews of files. FileSelect can generate previews for pdfs and images (including HEIC).
+A library for selecting, reading, and creating previews of files. FileSelect can generate previews for pdfs, audio files, video and images (including HEIC).
 
 Github repo: [https://github.com/aslamhus/fileselect](https://github.com/aslamhus/fileselect)
 
 ## Dependencies
 
-This package depends on the [Alex Corvi's Heic2any](https://alexcorvi.github.io/heic2any/) and [PDF.js](https://github.com/mozilla/pdf.js) to generate blobs for Heic files and Pdfs.
+This package depends on [Alex Corvi's Heic2any](https://alexcorvi.github.io/heic2any/) and [PDF.js](https://github.com/mozilla/pdf.js) to generate previews for Heic files and Pdfs.
 
 ## Installation
 
@@ -14,12 +14,25 @@ This package depends on the [Alex Corvi's Heic2any](https://alexcorvi.github.io/
 npm install @aslamhus/fileselect
 ```
 
+## Import
+
+For node users:
+
+```js
+import FileSelect from '@aslamhus/fileselect';
+```
+
+In the browser, with no module bundler:
+
+```js
+import FileSelect from '../lib/FileSelect.js';
+```
+
 ## Basic Usage
 
 ### Trigger a file select window
 
 ```js
-import FileSelect from 'fileselect';
 const fileSelect = new FileSelect();
 fileSelect.select().then((files) => {
   // do something with the files
@@ -112,7 +125,9 @@ const onInvalidType = (err) => {
 };
 ```
 
-## Use a specific file input element
+## Options
+
+### Use a specific file input element
 
 ---
 
@@ -121,7 +136,7 @@ const myInput = document.querySelector('#myInput')
 const fileSelect = new FileSelect("*", { fileInput : myInput}
 ```
 
-## Prevent FileSelect from adding a file input element to the DOM
+### Prevent FileSelect from adding a file input element to the DOM
 
 ---
 
@@ -131,7 +146,7 @@ This might be useful if you are receiving a filelist or fileobject from a datatr
 const fileSelect = new FileSelect('*', { fileInput: false });
 ```
 
-## Change color theme of file icons
+### Change color theme of file icons
 
 ---
 
@@ -156,7 +171,7 @@ const colors = {
 const fileSelect = new FileSelect('*', { colors: colors });
 ```
 
-## Read Files without file selection
+### Read Files without file selection
 
 ---
 
@@ -170,7 +185,7 @@ let readFiles = fileSelect.handleFile(file);
 
 _Note: The files must be instances of the [File Object](https://developer.mozilla.org/en-US/docs/Web/API/File) from a file input element or a `DataTransfer.`_
 
-## Specify which file types are allowed
+### Specify which file types are allowed
 
 ---
 
