@@ -16,7 +16,7 @@ global.URL = dom.window.URL;
 global.URL.createObjectURL = function (blob) {};
 global.URL.revokeObjectURL = function (blob) {};
 
-const FileSelect = require('../build/FileSelect').default;
+const { FileSelect } = require('../build/FileSelect');
 
 describe('pass valid selector "#myInput" to constructor', async () => {
   it('should return valid file input element', () => {

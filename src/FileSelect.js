@@ -23,9 +23,9 @@
 
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
-import FileIcon from '@aslamhus/fileicon';
+import { FileIcon } from '@aslamhus/fileicon';
 
-export default class FileSelect {
+export class FileSelect {
   constructor(
     allowedTypes = '*',
     options = {
@@ -318,7 +318,7 @@ export default class FileSelect {
 
   static getPDF(url) {
     return new Promise((resolve) =>
-      import(/* webpackChunkName: "pdjs" */ 'pdfjs-dist/webpack').then(
+      import(/* webpackChunkName: "pdfjs" */ 'pdfjs-dist/webpack').then(
         (pdfjsLib) => {
           if (typeof pdfjsLib === 'undefined') {
             throw new Error("couldn't initialize pdf.js library");
