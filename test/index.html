@@ -36,10 +36,17 @@
         <div id="preview"></div>
       </div>
     </main>
-    <script src="../lib/FileSelect.js"></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react@17/umd/react.production.min.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"
+    ></script>
+    <!-- <script src="../lib/FileSelect.js"></script> -->
     <script type="module">
-      // import FileSelect from '../lib/FileSelect.mjs';
-      console.log(FileSelect);
+      import { FileSelect } from '../lib/FileSelect.mjs';
       // if (module.hot) {
       //   module.hot.accept(
       //     ['../../node_modules/@aslamhus/fileselect/build/FileSelect.js'],
@@ -63,7 +70,7 @@
         };
         const fileSelect = new FileSelect('*', {
           fileInput: true,
-          theme: 'purple',
+          theme: 'blue',
           // onInvalidType: onInvalidType,
         });
         fileSelect.select().then((fileList) => {
@@ -82,7 +89,9 @@
             });
             // get preview
             fileSelect.getPreview(file).then((preview) => {
-              renderThumb(preview, filePreview);
+              console.log('preview should be react', preview);
+              ReactDOM.render(preview, filePreview);
+              // renderThumb(preview, filePreview);
             });
             // add filename
             const p = document.createElement('p');

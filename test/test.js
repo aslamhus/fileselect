@@ -16,7 +16,7 @@ global.URL = dom.window.URL;
 global.URL.createObjectURL = function (blob) {};
 global.URL.revokeObjectURL = function (blob) {};
 
-const { FileSelect } = require('../build/FileSelect');
+const { FileSelect } = require('../build/FileSelect.cjs');
 
 describe('pass valid selector "#myInput" to constructor', async () => {
   it('should return valid file input element', () => {
@@ -165,7 +165,7 @@ describe('Select an invalid file type', async () => {
 });
 
 describe('Get a preview of an image', async () => {
-  it('should return tag name IMG', async () => {
+  it('should return IMG tagName', async () => {
     const f = new File([''], 'filename.jpeg', {
       type: 'image/jpeg',
       lastModified: '',
@@ -177,15 +177,15 @@ describe('Get a preview of an image', async () => {
   });
 });
 
-describe('Get a file icon for a selected file', async () => {
-  it('should return tag name IMG', async () => {
+describe('Get a preview of a video', async () => {
+  it('should return VIDEO tagName', async () => {
     const f = new File([''], 'filename.mp4', {
       type: 'video/mp4',
       lastModified: '',
     });
     const FS = new FileSelect();
     const file = await FS.handleFile(f);
-    const icon = await FS.getIcon(f);
-    expect(icon.tagName).to.equal('IMG');
+    const icon = await FS.getPreview(f);
+    expect(icon.tagName).to.equal('VIDEO');
   });
 });

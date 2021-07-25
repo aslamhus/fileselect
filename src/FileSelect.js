@@ -17,8 +17,8 @@
  *      - a client defined function to be called when the file has been read.
  * @param {Function} options.onInvalidType
  *      - a client defined function to be called when there is an invalid type
- * @param {Function} options.colors
- *      icon colors. For more info see documentation at [createDefaultIcon]{@link createDefaultIcon}
+ * @param {Object} options.colors
+ *      - icon colors. For more info see documentation at [createDefaultIcon]{@link createDefaultIcon}  - set whether FileSelect returns a React Component (true) or the default HTML element (false)
  */
 
 import 'core-js/stable';
@@ -42,9 +42,10 @@ export class FileSelect {
       theme: options.theme,
     });
     this.svg = {
-      default:
-        '<svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="file" class="svg-inline--fa fa-file fa-w-12" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="currentColor" d="M369.9 97.9L286 14C277 5 264.8-.1 252.1-.1H48C21.5 0 0 21.5 0 48v416c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48V131.9c0-12.7-5.1-25-14.1-34zM332.1 128H256V51.9l76.1 76.1zM48 464V48h160v104c0 13.3 10.7 24 24 24h104v288H48z"></path></svg>',
+      //   default:
+      //     '<svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="file" class="svg-inline--fa fa-file fa-w-12" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="currentColor" d="M369.9 97.9L286 14C277 5 264.8-.1 252.1-.1H48C21.5 0 0 21.5 0 48v416c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48V131.9c0-12.7-5.1-25-14.1-34zM332.1 128H256V51.9l76.1 76.1zM48 464V48h160v104c0 13.3 10.7 24 24 24h104v288H48z"></path></svg>',
     };
+
     this.onInvalidType = options.onInvalidType;
     this.validateArguments(allowedTypes, options);
   }
@@ -196,7 +197,6 @@ export class FileSelect {
 
   /**
    * Gets a blob URL for the selected file.
-   * If the file is a PDF or a TEXT file, it returns a predetermined svg icon (as a blob url)
    * @param {file object} file  - a selected file from the file input.
    * @returns {Element} an element of the appropriate type (image, video, pdf)
    */
@@ -264,7 +264,9 @@ export class FileSelect {
     }
     // revokeObjectUrls onload (except for audio which is handled in the createAudioElement method
     if (previewEl && mimetype !== 'audio') {
-      previewEl.onload = URL.revokeObjectURL(url);
+      previewEl.onload = () => {
+        URL.revokeObjectURL(url);
+      };
     }
     return previewEl;
   }

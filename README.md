@@ -74,7 +74,7 @@ To prepare to upload the files, you can use the `readFiles` to read each file ob
 fileSelect.readFiles(fileList).then((readingFiles) => {
   readingFiles.forEach((read) => {
     read.then((file) => {
-      // handle file
+      // ready to be sent to the server
     });
   });
 });
