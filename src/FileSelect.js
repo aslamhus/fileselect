@@ -97,9 +97,7 @@ export class FileSelect {
   select() {
     return new Promise((resolve, reject) => {
       if (!this.fileInput) {
-        reject(
-          new Error('Invalid Argument Exception - no file element found.')
-        );
+        reject(new Error('Invalid Argument Exception - no file element found.'));
       }
       // prevents firing twice in case <input> tag is nested within target element
       this.fileInput.onclick = (e) => e.stopPropagation();
@@ -149,21 +147,14 @@ export class FileSelect {
   handleFile(file, allowedTypes) {
     return new Promise((resolve, reject) => {
       if (typeof file !== 'object' || !(file instanceof File)) {
-        reject(
-          new Error('Invalid Argument Exception. Expected instance of file.')
-        );
+        reject(new Error('Invalid Argument Exception. Expected instance of file.'));
       }
       const f = file;
       // give file a unique filename based on date
       f.uuid =
-        file.name !== undefined
-          ? file.name.replace(/(?=\.[^.]+$)/, `-${Date.now()}`)
-          : Date.now();
+        file.name !== undefined ? file.name.replace(/(?=\.[^.]+$)/, `-${Date.now()}`) : Date.now();
       // check filetype is allowed
-      const types = this.checkFileTypes(
-        file,
-        this.allowedTypes || allowedTypes
-      );
+      const types = this.checkFileTypes(file, this.allowedTypes || allowedTypes);
       if (!types.valid) {
         reject(new Error(types.message));
       }
@@ -178,10 +169,7 @@ export class FileSelect {
     const ext = FileSelect.getExtensionFromFilename(file.name);
     // if there is an SVG default icon or SVG icon for the file type, use that
     /* eslint no-prototype-builtins: "off" */
-    if (
-      this.svg.hasOwnProperty('default') ||
-      this.svg.hasOwnProperty(mimetype)
-    ) {
+    if (this.svg.hasOwnProperty('default') || this.svg.hasOwnProperty(mimetype)) {
       // a default svg icon will always be used over specific types
       const svgIcon = this.svg.default || this.svg[mimetype];
       const svgBlob = await FileSelect.createSVGBlob(svgIcon);
@@ -264,10 +252,13 @@ export class FileSelect {
     }
     // revokeObjectUrls onload (except for audio which is handled in the createAudioElement method
     if (previewEl && mimetype !== 'audio') {
-      previewEl.onload = () => {
-        URL.revokeObjectURL(url);
-      };
+      // previewEl.onload = () => {
+      //   URL.revokeObjectURL(url);
+      // };
     }
+    // add mimetype and subtype to previewEl dataset
+    previewEl.dataset.mimetype = mimetype;
+    previewEl.dataset.subtype = subtype;
     return previewEl;
   }
 
@@ -296,9 +287,7 @@ export class FileSelect {
   }
 
   static async getHEICBlob(file) {
-    const { default: heic2any } = await import(
-      /* webpackChunkName: "heic2any" */ 'heic2any'
-    );
+    const { default: heic2any } = await import(/* webpackChunkName: "heic2any" */ 'heic2any');
     const blob = await heic2any({
       blob: file,
       toType: 'image/jpg',
@@ -320,38 +309,46 @@ export class FileSelect {
 
   static getPDF(url) {
     return new Promise((resolve) =>
-      import(/* webpackChunkName: "pdfjs" */ 'pdfjs-dist/webpack').then(
-        (pdfjsLib) => {
-          if (typeof pdfjsLib === 'undefined') {
-            throw new Error("couldn't initialize pdf.js library");
-          }
-          const loadingTask = pdfjsLib.getDocument(url);
-          loadingTask.promise.then((pdf) => {
-            pdf.getPage(1).then((page) => {
-              const scale = 1;
-              const viewport = page.getViewport({ scale });
-              const canvas = document.createElement('canvas');
-              canvas.style.cssText = `
+      import(/* webpackChunkName: "pdfjs" */ 'pdfjs-dist/webpack').then((pdfjsLib) => {
+        if (typeof pdfjsLib === 'undefined') {
+          throw new Error("couldn't initialize pdf.js library");
+        }
+        const loadingTask = pdfjsLib.getDocument(url);
+        loadingTask.promise.then((pdf) => {
+          pdf.getPage(1).then((page) => {
+            const scale = 1;
+            const viewport = page.getViewport({ scale });
+            const canvas = document.createElement('canvas');
+            canvas.style.cssText = `
                           position:relative;
                           width:100%;
                           height:auto;
                           margin:0px auto;
                           top:50%;
                           transform: translateY(-50%);`;
-              const context = canvas.getContext('2d');
-              canvas.height = viewport.height;
-              canvas.width = viewport.width;
+            const context = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
 
-              const renderContext = {
-                canvasContext: context,
-                viewport,
-              };
-              page.render(renderContext);
-              resolve(canvas);
+            const renderContext = {
+              canvasContext: context,
+              viewport,
+            };
+            var renderTask = page.render(renderContext);
+            renderTask.promise.then(function () {
+              canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                const img = document.createElement('img');
+                img.src = url;
+                img.onload = () => {
+                  URL.revokeObjectURL(blob);
+                };
+                resolve(img);
+              });
             });
           });
-        }
-      )
+        });
+      })
     );
   }
 
