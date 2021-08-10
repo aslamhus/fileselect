@@ -18,7 +18,9 @@
  * @param {Function} options.onInvalidType
  *      - a client defined function to be called when there is an invalid type
  * @param {Object} options.colors
- *      - icon colors. For more info see documentation at [createDefaultIcon]{@link createDefaultIcon}  - set whether FileSelect returns a React Component (true) or the default HTML element (false)
+ *      - icon colors. For more info see documentation at [createDefaultIcon]{@link createDefaultIcon}
+ * @param {Object} options.preview.backgroundImage
+ *      - sets whether preview returns div element with background image (true) or img element (false) (default)
  */
 
 import 'core-js/stable';
@@ -35,6 +37,9 @@ export class FileSelect {
       onInvalidType: null,
       colors: null,
       theme: null,
+      preview: {
+        backgroundImage: false,
+      },
     }
   ) {
     this.fileIcon = new FileIcon({
@@ -45,7 +50,7 @@ export class FileSelect {
       //   default:
       //     '<svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="file" class="svg-inline--fa fa-file fa-w-12" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="currentColor" d="M369.9 97.9L286 14C277 5 264.8-.1 252.1-.1H48C21.5 0 0 21.5 0 48v416c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48V131.9c0-12.7-5.1-25-14.1-34zM332.1 128H256V51.9l76.1 76.1zM48 464V48h160v104c0 13.3 10.7 24 24 24h104v288H48z"></path></svg>',
     };
-
+    this.preview = options.preview;
     this.onInvalidType = options.onInvalidType;
     this.validateArguments(allowedTypes, options);
   }
@@ -83,7 +88,6 @@ export class FileSelect {
       e.stopPropagation();
       e.preventDefault();
       [file] = e.target.files;
-      console.log('FileSelect - file', file);
     } else {
       file = e;
     }
@@ -97,9 +101,7 @@ export class FileSelect {
   select() {
     return new Promise((resolve, reject) => {
       if (!this.fileInput) {
-        reject(
-          new Error('Invalid Argument Exception - no file element found.')
-        );
+        reject(new Error('Invalid Argument Exception - no file element found.'));
       }
       // prevents firing twice in case <input> tag is nested within target element
       this.fileInput.onclick = (e) => e.stopPropagation();
@@ -149,39 +151,53 @@ export class FileSelect {
   handleFile(file, allowedTypes) {
     return new Promise((resolve, reject) => {
       if (typeof file !== 'object' || !(file instanceof File)) {
-        reject(
-          new Error('Invalid Argument Exception. Expected instance of file.')
-        );
+        reject(new Error('Invalid Argument Exception. Expected instance of file.'));
       }
       const f = file;
       // give file a unique filename based on date
       f.uuid =
-        file.name !== undefined
-          ? file.name.replace(/(?=\.[^.]+$)/, `-${Date.now()}`)
+        file?.name !== undefined
+          ? file?.name.replace(/(?=\.[^.]+$)/, `-${Date.now()}`)
           : Date.now();
+
       // check filetype is allowed
-      const types = this.checkFileTypes(
-        file,
-        this.allowedTypes || allowedTypes
-      );
+      const types = this.checkFileTypes(file, this.allowedTypes || allowedTypes);
       if (!types.valid) {
         reject(new Error(types.message));
       }
       // read the file
-      this.readFile(file, resolve, reject);
+      if (file.type.toLowerCase().includes('heic') || file.type.toLowerCase().includes('heif')) {
+        // check if the file is HEIC type
+        if (file.heicConvert) {
+          // check if an Heic conversion has already taken place
+          // or is in progress
+          file.heicConvert.then((blob) => {
+            const newFile = FileSelect.blobToFile(blob, file);
+            this.readFile(newFile, resolve, reject);
+          });
+        } else {
+          // convert the heic to jpeg
+          file.heicConvert = FileSelect.getHEICBlob(file);
+          file.heicConvert.then((blob) => {
+            const newFile = FileSelect.blobToFile(blob, file);
+            // read file
+            this.readFile(newFile, resolve, reject);
+          });
+        }
+      } else {
+        // default read non heic type
+        this.readFile(file, resolve, reject);
+      }
     });
   }
 
-  async getIcon(file) {
+  async getIcon(file, svg = false) {
     let icon;
     const [mimetype] = file.type.split('/');
-    const ext = FileSelect.getExtensionFromFilename(file.name);
+    const ext = FileSelect.getExtensionFromFilename(file?.name);
     // if there is an SVG default icon or SVG icon for the file type, use that
     /* eslint no-prototype-builtins: "off" */
-    if (
-      this.svg.hasOwnProperty('default') ||
-      this.svg.hasOwnProperty(mimetype)
-    ) {
+    if (this.svg.hasOwnProperty('default') || this.svg.hasOwnProperty(mimetype)) {
       // a default svg icon will always be used over specific types
       const svgIcon = this.svg.default || this.svg[mimetype];
       const svgBlob = await FileSelect.createSVGBlob(svgIcon);
@@ -210,7 +226,11 @@ export class FileSelect {
     // if the type is not text/plain, image/heic, image, video or pdf
     // then create default svg file
     if (file.type === 'image/heic' || file.type === 'image/heif') {
-      blob = await FileSelect.getHEICBlob(file);
+      file.heicConvert = FileSelect.getHEICBlob(file);
+      blob = await file.heicConvert;
+      // attach converted file to fileObject:
+      const newFile = FileSelect.blobToFile(blob, file);
+      file.heicConvert = newFile;
     } else if (
       mimetype === 'image' ||
       mimetype === 'video' ||
@@ -220,7 +240,7 @@ export class FileSelect {
     ) {
       blob = file;
     } else {
-      console.log(`unrecognized file type: ${file.type}`);
+      console.error(`unrecognized file type: ${file.type}`);
       blob = file;
     }
     // 2. createObjectURL from blob
@@ -231,9 +251,15 @@ export class FileSelect {
     switch (mimetype) {
       case 'application':
         if (subtype === 'pdf') {
-          previewEl = await FileSelect.getPDF(url);
+          const pdfBlob = await FileSelect.getPDF(url);
+          if (this.preview.backgroundImage) {
+            previewEl = FileSelect.createBackgroundImageDiv(pdfBlob, file.type);
+          } else {
+            previewEl = FileSelect.createImg(pdfBlob);
+          }
         } else {
           // default for other application subtypes
+          previewEl = FileSelect.createNoPreview();
         }
         break;
 
@@ -245,11 +271,13 @@ export class FileSelect {
           previewEl.textContent = text;
         } else {
           // default for other text types i.e. rtf
+          previewEl = FileSelect.createNoPreview();
         }
         break;
 
       case 'video':
         previewEl = document.createElement('video');
+        previewEl.preload = 'none';
         previewEl.src = url;
         break;
 
@@ -258,22 +286,62 @@ export class FileSelect {
         break;
 
       case 'image':
-        previewEl = document.createElement('img');
-        previewEl.src = url;
+        if (this.preview.backgroundImage) {
+          previewEl = FileSelect.createBackgroundImageDiv(url, file.type);
+        } else {
+          previewEl = FileSelect.createImg(url);
+        }
         break;
+
+      default:
+        previewEl = FileSelect.createNoPreview();
     }
     // revokeObjectUrls onload (except for audio which is handled in the createAudioElement method
-    if (previewEl && mimetype !== 'audio') {
+    if (previewEl && mimetype !== 'audio' && mimetype !== 'image' && mimetype !== 'application') {
       previewEl.onload = () => {
         URL.revokeObjectURL(url);
       };
     }
+    if (previewEl) {
+      // add mimetype and subtype to previewEl dataset
+      previewEl.dataset.mimetype = mimetype;
+      previewEl.dataset.subtype = subtype;
+    }
+
     return previewEl;
+  }
+
+  static createImg(url) {
+    const img = document.createElement('img');
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+    };
+    img.src = url;
+
+    return img;
+  }
+
+  static createNoPreview() {
+    return null;
+  }
+
+  static createBackgroundImageDiv(url, type) {
+    const div = document.createElement('div');
+    div.dataset.src = url;
+    div.dataset.type = type;
+    div.style.backgroundImage = `url(${url})`;
+    div.style.backgroundPosition = 'top left';
+    div.style.backgroundSize = 'contain';
+    div.style.backgroundRepeat = 'no-repeat';
+
+    return div;
   }
 
   static createAudioElement(url, type) {
     const aud = document.createElement('audio');
     aud.controls = 'controls';
+    aud.preload = 'metadata';
+    aud.classList.add('test');
     aud.oncanplaythrough = () => {
       URL.revokeObjectURL(url);
     };
@@ -296,9 +364,7 @@ export class FileSelect {
   }
 
   static async getHEICBlob(file) {
-    const { default: heic2any } = await import(
-      /* webpackChunkName: "heic2any" */ 'heic2any'
-    );
+    const { default: heic2any } = await import(/* webpackChunkName: "heic2any" */ 'heic2any');
     const blob = await heic2any({
       blob: file,
       toType: 'image/jpg',
@@ -311,6 +377,15 @@ export class FileSelect {
     return blob;
   }
 
+  static blobToFile(blob, file) {
+    const ext = blob.type.split('/')[1];
+    const newFilename = file.uuid.replace(/(HEIC)/, ext);
+    const newFile = new File([blob], newFilename, { type: blob.type });
+    newFile.uuid = newFilename;
+
+    return newFile;
+  }
+
   static createSVGBlob(svg) {
     return new Promise((resolve) => {
       const blob = new Blob([svg], { type: 'image/svg+xml' });
@@ -320,38 +395,41 @@ export class FileSelect {
 
   static getPDF(url) {
     return new Promise((resolve) =>
-      import(/* webpackChunkName: "pdfjs" */ 'pdfjs-dist/webpack').then(
-        (pdfjsLib) => {
-          if (typeof pdfjsLib === 'undefined') {
-            throw new Error("couldn't initialize pdf.js library");
-          }
-          const loadingTask = pdfjsLib.getDocument(url);
-          loadingTask.promise.then((pdf) => {
-            pdf.getPage(1).then((page) => {
-              const scale = 1;
-              const viewport = page.getViewport({ scale });
-              const canvas = document.createElement('canvas');
-              canvas.style.cssText = `
+      import(/* webpackChunkName: "pdfjs" */ 'pdfjs-dist/webpack').then((pdfjsLib) => {
+        if (typeof pdfjsLib === 'undefined') {
+          throw new Error("couldn't initialize pdf.js library");
+        }
+        const loadingTask = pdfjsLib.getDocument(url);
+        loadingTask.promise.then((pdf) => {
+          pdf.getPage(1).then((page) => {
+            const scale = 1;
+            const viewport = page.getViewport({ scale });
+            const canvas = document.createElement('canvas');
+            canvas.style.cssText = `
                           position:relative;
                           width:100%;
                           height:auto;
                           margin:0px auto;
                           top:50%;
                           transform: translateY(-50%);`;
-              const context = canvas.getContext('2d');
-              canvas.height = viewport.height;
-              canvas.width = viewport.width;
+            const context = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
 
-              const renderContext = {
-                canvasContext: context,
-                viewport,
-              };
-              page.render(renderContext);
-              resolve(canvas);
+            const renderContext = {
+              canvasContext: context,
+              viewport,
+            };
+            var renderTask = page.render(renderContext);
+            renderTask.promise.then(function () {
+              canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                resolve(url);
+              });
             });
           });
-        }
-      )
+        });
+      })
     );
   }
 

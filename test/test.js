@@ -4,9 +4,7 @@ const assert = require('assert');
 const jsdom = require('jsdom');
 
 const { JSDOM } = jsdom;
-const dom = new JSDOM(
-  "<!DOCTYPE html><body><input type='file' id='myInput'></body>"
-);
+const dom = new JSDOM("<!DOCTYPE html><body><input type='file' id='myInput'></body>");
 global.window = dom.window;
 global.document = dom.window.document;
 global.File = dom.window.File;

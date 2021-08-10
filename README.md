@@ -199,7 +199,7 @@ const fs = new FileSelect(allowedTypes);
 const fs = new FileSelect('image/*');
 ```
 
-### Examples
+#### Examples
 
 | Value                        | Types allowed   |
 | ---------------------------- | --------------- |
@@ -208,8 +208,22 @@ const fs = new FileSelect('image/*');
 | video/\*                     | all videos      |
 | [ 'image/png', 'video/mp4' ] | pngs and mp4s   |
 
+### Get a `DIV` with a `backgroundImage` instead of an `IMG` element
+
+Returns PDF and Image previews as divs instead of an img element.
+The element stores the mimetype and blob url in its dataset:
+
+```js
+const fs = new FileSelect('*', { preview: { backgroundImage: true } });
+```
+
+**Note:**
+If you use this option, please be sure to use URL.revokeObjectURL after you have loaded the image, since an onload event cannot be attached to a background image.
+
+---
+
 ## Tests
 
 ```bash
-`npm test`
+`npm run test`
 ```

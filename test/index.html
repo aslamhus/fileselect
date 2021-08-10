@@ -19,10 +19,7 @@
         }
       </style>
       <!-- Font Awesome -->
-      <script
-        src="https://kit.fontawesome.com/88e0de7c9a.js"
-        crossorigin="anonymous"
-      ></script>
+      <script src="https://kit.fontawesome.com/88e0de7c9a.js" crossorigin="anonymous"></script>
     </head>
 
     <main>
@@ -30,20 +27,11 @@
       <img src="./images/file-alt-regular.svg" /> -->
       <div class="add-item">
         <h1>+New File</h1>
-        <button type="button" class="form-control-file" id="select">
-          select
-        </button>
+        <button type="button" class="form-control-file" id="select">select</button>
         <div id="preview"></div>
       </div>
     </main>
-    <script
-      crossorigin
-      src="https://unpkg.com/react@17/umd/react.production.min.js"
-    ></script>
-    <script
-      crossorigin
-      src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"
-    ></script>
+
     <!-- <script src="../lib/FileSelect.js"></script> -->
     <script type="module">
       import { FileSelect } from '../lib/FileSelect.mjs';
@@ -71,6 +59,7 @@
         const fileSelect = new FileSelect('*', {
           fileInput: true,
           theme: 'blue',
+          react: 'true',
           // onInvalidType: onInvalidType,
         });
         fileSelect.select().then((fileList) => {
@@ -89,9 +78,7 @@
             });
             // get preview
             fileSelect.getPreview(file).then((preview) => {
-              console.log('preview should be react', preview);
-              ReactDOM.render(preview, filePreview);
-              // renderThumb(preview, filePreview);
+              renderThumb(preview, filePreview);
             });
             // add filename
             const p = document.createElement('p');
