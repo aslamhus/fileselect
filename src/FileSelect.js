@@ -19,6 +19,10 @@
  *      - a client defined function to be called when there is an invalid type
  * @param {Object} options.colors
  *      - icon colors. For more info see documentation at [createDefaultIcon]{@link createDefaultIcon}
+ * @param {Object} options.theme
+ *      - icon theme. For more info see documentation at [createDefaultIcon]{@link createDefaultIcon}
+ * @param {Object} options.filesize
+ *      - sets a filesize limit in bytes, default is 100000000 (~100 MB)
  * @param {Object} options.preview.backgroundImage
  *      - sets whether preview returns div element with background image (true) or img element (false) (default)
  */
@@ -37,6 +41,7 @@ export class FileSelect {
       onInvalidType: null,
       colors: null,
       theme: null,
+      filesize: null,
       preview: {
         backgroundImage: false,
       },
@@ -52,6 +57,7 @@ export class FileSelect {
     };
     this.preview = options.preview;
     this.onInvalidType = options.onInvalidType;
+    this.filesize = options.filesize || 100000000;
     this.validateArguments(allowedTypes, options);
   }
 
@@ -108,11 +114,15 @@ export class FileSelect {
       // handles files, resolves selectImage's promise when the files are read.
       this.fileInput.onchange = (e) => {
         const { files } = e.target;
-        // check each file type is allowed
         files.forEach((file) => {
+          // check each file type is allowed
           const types = this.checkFileTypes(file, this.allowedTypes);
           if (!types.valid) {
             reject(new Error(types.message));
+          }
+          // check file size is allowed
+          if (file.size > this.filesize) {
+            reject(new Error('Failed to select file, File size exceeded limit'));
           }
         });
         resolve(files);
@@ -165,6 +175,10 @@ export class FileSelect {
       if (!types.valid) {
         reject(new Error(types.message));
       }
+      // check file size is allowed
+      if (file.size > this.filesize) {
+        reject(new Error('Failed to handle file, File size exceeded limit'));
+      }
       // read the file
       if (file.type.toLowerCase().includes('heic') || file.type.toLowerCase().includes('heif')) {
         // check if the file is HEIC type
@@ -185,7 +199,7 @@ export class FileSelect {
           });
         }
       } else {
-        // default read non heic type
+        // default read (non heic type)
         this.readFile(file, resolve, reject);
       }
     });
@@ -240,14 +254,18 @@ export class FileSelect {
     ) {
       blob = file;
     } else {
-      console.error(`unrecognized file type: ${file.type}`);
-      blob = file;
+      console.warn(`unrecognized file type: ${file.type}`);
+      blob = null;
     }
     // 2. createObjectURL from blob
-    let url = file;
-    if (blob) url = URL.createObjectURL(blob);
-    // 3. create preview Element from URL object
     let previewEl;
+    let url = file;
+    if (blob) {
+      url = URL.createObjectURL(blob);
+    } else {
+      previewEl = FileSelect.createNoPreview();
+    }
+    // 3. create preview Element from URL object
     switch (mimetype) {
       case 'application':
         if (subtype === 'pdf') {

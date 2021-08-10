@@ -49,6 +49,7 @@ var FileSelect = /*#__PURE__*/function () {
       onInvalidType: null,
       colors: null,
       theme: null,
+      filesize: null,
       preview: {
         backgroundImage: false
       }
@@ -65,6 +66,7 @@ var FileSelect = /*#__PURE__*/function () {
     };
     this.preview = options.preview;
     this.onInvalidType = options.onInvalidType;
+    this.filesize = options.filesize || 100000000;
     this.validateArguments(allowedTypes, options);
   }
 
@@ -164,13 +166,18 @@ var FileSelect = /*#__PURE__*/function () {
 
 
         _this.fileInput.onchange = function (e) {
-          var files = e.target.files; // check each file type is allowed
-
+          var files = e.target.files;
           files.forEach(function (file) {
+            // check each file type is allowed
             var types = _this.checkFileTypes(file, _this.allowedTypes);
 
             if (!types.valid) {
               reject(new Error(types.message));
+            } // check file size is allowed
+
+
+            if (file.size > _this.filesize) {
+              reject(new Error('Failed to select file, File size exceeded limit'));
             }
           });
           resolve(files);
@@ -252,6 +259,11 @@ var FileSelect = /*#__PURE__*/function () {
 
         if (!types.valid) {
           reject(new Error(types.message));
+        } // check file size is allowed
+
+
+        if (file.size > _this3.filesize) {
+          reject(new Error('Failed to handle file, File size exceeded limit'));
         } // read the file
 
 
@@ -275,7 +287,7 @@ var FileSelect = /*#__PURE__*/function () {
             });
           }
         } else {
-          // default read non heic type
+          // default read (non heic type)
           _this3.readFile(file, resolve, reject);
         }
       });
@@ -356,7 +368,7 @@ var FileSelect = /*#__PURE__*/function () {
     key: "getPreview",
     value: function () {
       var _getPreview = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(file) {
-        var blob, _file$type$split3, _file$type$split4, mimetype, subtype, newFile, url, previewEl, pdfBlob, text;
+        var blob, _file$type$split3, _file$type$split4, mimetype, subtype, newFile, previewEl, url, pdfBlob, text;
 
         return regeneratorRuntime.wrap(function _callee4$(_context4) {
           while (1) {
@@ -395,14 +407,19 @@ var FileSelect = /*#__PURE__*/function () {
                 if (mimetype === 'image' || mimetype === 'video' || mimetype === 'audio' || subtype === 'pdf' || file.type === 'text/plain') {
                   blob = file;
                 } else {
-                  console.error("unrecognized file type: ".concat(file.type));
-                  blob = file;
+                  console.warn("unrecognized file type: ".concat(file.type));
+                  blob = null;
                 }
 
               case 13:
-                // 2. createObjectURL from blob
                 url = file;
-                if (blob) url = URL.createObjectURL(blob); // 3. create preview Element from URL object
+
+                if (blob) {
+                  url = URL.createObjectURL(blob);
+                } else {
+                  previewEl = FileSelect.createNoPreview();
+                } // 3. create preview Element from URL object
+
 
                 _context4.t0 = mimetype;
                 _context4.next = _context4.t0 === 'application' ? 18 : _context4.t0 === 'text' ? 27 : _context4.t0 === 'video' ? 38 : _context4.t0 === 'audio' ? 42 : _context4.t0 === 'image' ? 44 : 46;
