@@ -391,7 +391,8 @@ export class FileSelect {
     const { default: heic2any } = await import(/* webpackChunkName: "heic2any" */ 'heic2any');
     const blob = await heic2any({
       blob: file,
-      toType: 'image/jpg',
+      toType: 'image/jpeg',
+      quality: 0.5,
     })
       .then((result) => result)
       .catch((err) => {
@@ -507,6 +508,10 @@ export class FileSelect {
     let fileArray;
     const reader = new FileReader();
     reader.onprogress = (e) => {
+      if (e.lengthComputable) {
+        var rprogress = parseInt((e.loaded / e.total) * 100, 10);
+      }
+      console.log('reader progress data', rprogress);
       this.progress(e, file);
     };
     reader.onload = ((f) => (e) => {
