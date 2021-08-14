@@ -55,6 +55,7 @@ export class FileSelect {
       //   default:
       //     '<svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="file" class="svg-inline--fa fa-file fa-w-12" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="currentColor" d="M369.9 97.9L286 14C277 5 264.8-.1 252.1-.1H48C21.5 0 0 21.5 0 48v416c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48V131.9c0-12.7-5.1-25-14.1-34zM332.1 128H256V51.9l76.1 76.1zM48 464V48h160v104c0 13.3 10.7 24 24 24h104v288H48z"></path></svg>',
     };
+    this.fileList = [];
     this.preview = options.preview;
     this.onInvalidType = options.onInvalidType;
     this.filesize = options.filesize || 100000000;
@@ -114,13 +115,14 @@ export class FileSelect {
       // handles files, resolves selectImage's promise when the files are read.
       this.fileInput.onchange = (e) => {
         const { files } = e.target;
+        // add files to fileList
+        this.fileList = [...this.fileList, ...files];
+        // check each files type and size
         files.forEach((file) => {
-          // check each file type is allowed
           const types = this.checkFileTypes(file, this.allowedTypes);
           if (!types.valid) {
             reject(new Error(types.message));
           }
-          // check file size is allowed
           if (file.size > this.filesize) {
             reject(new Error('Failed to select file, File size exceeded limit'));
           }
@@ -133,8 +135,12 @@ export class FileSelect {
   }
 
   getFiles() {
-    if (!this.fileInput) throw new Error('There are no files to get');
-    return this.fileInput.files;
+    return this.fileList;
+  }
+
+  removeFiles() {
+    this.fileList = [];
+    return this.fileList;
   }
 
   async readFiles(files) {
@@ -424,12 +430,12 @@ export class FileSelect {
             const viewport = page.getViewport({ scale });
             const canvas = document.createElement('canvas');
             canvas.style.cssText = `
-                          position:relative;
-                          width:100%;
-                          height:auto;
-                          margin:0px auto;
-                          top:50%;
-                          transform: translateY(-50%);`;
+                           position:relative;
+                           width:100%;
+                           height:auto;
+                           margin:0px auto;
+                           top:50%;
+                           transform: translateY(-50%);`;
             const context = canvas.getContext('2d');
             canvas.height = viewport.height;
             canvas.width = viewport.width;

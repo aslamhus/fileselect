@@ -17,6 +17,14 @@ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && 
 
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -64,6 +72,7 @@ var FileSelect = /*#__PURE__*/function () {
     this.svg = {//   default:
       //     '<svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="file" class="svg-inline--fa fa-file fa-w-12" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="currentColor" d="M369.9 97.9L286 14C277 5 264.8-.1 252.1-.1H48C21.5 0 0 21.5 0 48v416c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48V131.9c0-12.7-5.1-25-14.1-34zM332.1 128H256V51.9l76.1 76.1zM48 464V48h160v104c0 13.3 10.7 24 24 24h104v288H48z"></path></svg>',
     };
+    this.fileList = [];
     this.preview = options.preview;
     this.onInvalidType = options.onInvalidType;
     this.filesize = options.filesize || 100000000;
@@ -166,15 +175,16 @@ var FileSelect = /*#__PURE__*/function () {
 
 
         _this.fileInput.onchange = function (e) {
-          var files = e.target.files;
+          var files = e.target.files; // add files to fileList
+
+          _this.fileList = [].concat(_toConsumableArray(_this.fileList), _toConsumableArray(files)); // check each files type and size
+
           files.forEach(function (file) {
-            // check each file type is allowed
             var types = _this.checkFileTypes(file, _this.allowedTypes);
 
             if (!types.valid) {
               reject(new Error(types.message));
-            } // check file size is allowed
-
+            }
 
             if (file.size > _this.filesize) {
               reject(new Error('Failed to select file, File size exceeded limit'));
@@ -190,8 +200,13 @@ var FileSelect = /*#__PURE__*/function () {
   }, {
     key: "getFiles",
     value: function getFiles() {
-      if (!this.fileInput) throw new Error('There are no files to get');
-      return this.fileInput.files;
+      return this.fileList;
+    }
+  }, {
+    key: "removeFiles",
+    value: function removeFiles() {
+      this.fileList = [];
+      return this.fileList;
     }
   }, {
     key: "readFiles",
@@ -778,7 +793,7 @@ var FileSelect = /*#__PURE__*/function () {
                 scale: scale
               });
               var canvas = document.createElement('canvas');
-              canvas.style.cssText = "\n                          position:relative;\n                          width:100%;\n                          height:auto;\n                          margin:0px auto;\n                          top:50%;\n                          transform: translateY(-50%);";
+              canvas.style.cssText = "\n                           position:relative;\n                           width:100%;\n                           height:auto;\n                           margin:0px auto;\n                           top:50%;\n                           transform: translateY(-50%);";
               var context = canvas.getContext('2d');
               canvas.height = viewport.height;
               canvas.width = viewport.width;

@@ -5,6 +5,7 @@ process.env.NODE_ENV = 'development';
 module.exports = merge(common, {
   mode: 'development',
   devtool: 'source-map', // source-map for no eval
+
   devServer: {
     open: true,
     openPage: 'test/index.html',
