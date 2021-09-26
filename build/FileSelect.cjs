@@ -47,7 +47,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var FileSelect = function () {
+var FileSelect = /*#__PURE__*/function () {
   function FileSelect() {
     var allowedTypes = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '*';
     var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {
@@ -55,6 +55,7 @@ var FileSelect = function () {
       onReaderProgress: null,
       onReadFileComplete: null,
       onInvalidType: null,
+      multiple: null,
       colors: null,
       theme: null,
       filesize: null,
@@ -69,11 +70,14 @@ var FileSelect = function () {
       colors: options.colors,
       theme: options.theme
     });
-    this.svg = {};
+    this.svg = {//   default:
+      //     '<svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="file" class="svg-inline--fa fa-file fa-w-12" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="currentColor" d="M369.9 97.9L286 14C277 5 264.8-.1 252.1-.1H48C21.5 0 0 21.5 0 48v416c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48V131.9c0-12.7-5.1-25-14.1-34zM332.1 128H256V51.9l76.1 76.1zM48 464V48h160v104c0 13.3 10.7 24 24 24h104v288H48z"></path></svg>',
+    };
     this.fileList = [];
     this.preview = options.preview;
     this.onInvalidType = options.onInvalidType;
     this.filesize = options.filesize || 100000000;
+    this.multiple = options.multiple === false ? false : true;
     this.validateArguments(allowedTypes, options);
   }
 
@@ -85,12 +89,14 @@ var FileSelect = function () {
       if (fileInput) {
         var _this$fileInput;
 
+        // find fileInput tag, if not found create
         this.fileInput = fileInput;
 
         if (!((_this$fileInput = this.fileInput) !== null && _this$fileInput !== void 0 && _this$fileInput.tagName)) {
           this.fileInput = document.querySelector(fileInput) || document.querySelector('input[type=file]') || this.createFileInput();
         }
-      }
+      } // get allowed types
+
 
       if (allowedTypes) this.allowedTypes = allowedTypes;else this.allowedTypes = '*';
     }
@@ -101,14 +107,15 @@ var FileSelect = function () {
       this.fileInput.type = 'file';
       this.fileInput.id = Date.now();
       this.fileInput.style.display = 'none';
-      this.fileInput.multiple = 'true';
+      console.log('this.multiple', this.multiple);
+      if (this.fileInput.multiple) this.fileInput.multiple = 'true';
       document.body.append(this.fileInput);
       return this.fileInput;
     }
   }, {
     key: "fileSelected",
     value: function () {
-      var _fileSelected = _asyncToGenerator(regeneratorRuntime.mark(function _callee(e) {
+      var _fileSelected = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
         var file, _e$target$files, fileRead;
 
         return regeneratorRuntime.wrap(function _callee$(_context) {
@@ -162,15 +169,19 @@ var FileSelect = function () {
       return new Promise(function (resolve, reject) {
         if (!_this.fileInput) {
           reject(new Error('Invalid Argument Exception - no file element found.'));
-        }
+        } // prevents firing twice in case <input> tag is nested within target element
+
 
         _this.fileInput.onclick = function (e) {
           return e.stopPropagation();
-        };
+        }; // handles files, resolves selectImage's promise when the files are read.
+
 
         _this.fileInput.onchange = function (e) {
-          var files = e.target.files;
-          _this.fileList = [].concat(_toConsumableArray(_this.fileList), _toConsumableArray(files));
+          var files = e.target.files; // add files to fileList
+
+          _this.fileList = [].concat(_toConsumableArray(_this.fileList), _toConsumableArray(files)); // check each files type and size
+
           files.forEach(function (file) {
             var types = _this.checkFileTypes(file, _this.allowedTypes);
 
@@ -183,7 +194,8 @@ var FileSelect = function () {
             }
           });
           resolve(files);
-        };
+        }; // trigger file selection.
+
 
         _this.fileInput.click();
       });
@@ -202,7 +214,7 @@ var FileSelect = function () {
   }, {
     key: "readFiles",
     value: function () {
-      var _readFiles = _asyncToGenerator(regeneratorRuntime.mark(function _callee2(files) {
+      var _readFiles = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(files) {
         var _this2 = this;
 
         var filesRead;
@@ -234,6 +246,19 @@ var FileSelect = function () {
 
       return readFiles;
     }()
+    /**
+     * Handle the image.
+     * Summary.
+     * 1) Add unique filename (re)Check the file types are valid.
+     * 2) Read and return a file object with the data:URL.
+     * @param {File} file
+     *    - the file object to be handled. Must be instance of file
+     * @param {String | String[]} allowedTypes
+     *    - file types allowed. Example: [ 'image/jpeg', 'application/pdf' ]
+     * @returns {Promise}
+     *    - a promise that resolves when the file has been read.
+     */
+
   }, {
     key: "handleFile",
     value: function handleFile(file, allowedTypes) {
@@ -244,35 +269,43 @@ var FileSelect = function () {
           reject(new Error('Invalid Argument Exception. Expected instance of file.'));
         }
 
-        var f = file;
-        f.uuid = (file === null || file === void 0 ? void 0 : file.name) !== undefined ? file === null || file === void 0 ? void 0 : file.name.replace(/(?=\.[^.]+$)/, "-".concat(Date.now())) : Date.now();
+        var f = file; // give file a unique filename based on date
+
+        f.uuid = (file === null || file === void 0 ? void 0 : file.name) !== undefined ? file === null || file === void 0 ? void 0 : file.name.replace(/(?=\.[^.]+$)/, "-".concat(Date.now())) : Date.now(); // check filetype is allowed
 
         var types = _this3.checkFileTypes(file, _this3.allowedTypes || allowedTypes);
 
         if (!types.valid) {
           reject(new Error(types.message));
-        }
+        } // check file size is allowed
+
 
         if (file.size > _this3.filesize) {
           reject(new Error('Failed to handle file, File size exceeded limit'));
-        }
+        } // read the file
+
 
         if (file.type.toLowerCase().includes('heic') || file.type.toLowerCase().includes('heif')) {
+          // check if the file is HEIC type
           if (file.heicConvert) {
+            // check if an Heic conversion has already taken place
+            // or is in progress
             file.heicConvert.then(function (blob) {
               var newFile = FileSelect.blobToFile(blob, file);
 
               _this3.readFile(newFile, resolve, reject);
             });
           } else {
+            // convert the heic to jpeg
             file.heicConvert = FileSelect.getHEICBlob(file);
             file.heicConvert.then(function (blob) {
-              var newFile = FileSelect.blobToFile(blob, file);
+              var newFile = FileSelect.blobToFile(blob, file); // read file
 
               _this3.readFile(newFile, resolve, reject);
             });
           }
         } else {
+          // default read (non heic type)
           _this3.readFile(file, resolve, reject);
         }
       });
@@ -280,7 +313,7 @@ var FileSelect = function () {
   }, {
     key: "getIcon",
     value: function () {
-      var _getIcon = _asyncToGenerator(regeneratorRuntime.mark(function _callee3(file) {
+      var _getIcon = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(file) {
         var svg,
             icon,
             _file$type$split,
@@ -297,13 +330,16 @@ var FileSelect = function () {
               case 0:
                 svg = _args3.length > 1 && _args3[1] !== undefined ? _args3[1] : false;
                 _file$type$split = file.type.split('/'), _file$type$split2 = _slicedToArray(_file$type$split, 1), mimetype = _file$type$split2[0];
-                ext = FileSelect.getExtensionFromFilename(file === null || file === void 0 ? void 0 : file.name);
+                ext = FileSelect.getExtensionFromFilename(file === null || file === void 0 ? void 0 : file.name); // if there is an SVG default icon or SVG icon for the file type, use that
+
+                /* eslint no-prototype-builtins: "off" */
 
                 if (!(this.svg.hasOwnProperty('default') || this.svg.hasOwnProperty(mimetype))) {
                   _context3.next = 13;
                   break;
                 }
 
+                // a default svg icon will always be used over specific types
                 svgIcon = this.svg["default"] || this.svg[mimetype];
                 _context3.next = 7;
                 return FileSelect.createSVGBlob(svgIcon);
@@ -340,10 +376,16 @@ var FileSelect = function () {
 
       return getIcon;
     }()
+    /**
+     * Gets a blob URL for the selected file.
+     * @param {file object} file  - a selected file from the file input.
+     * @returns {Element} an element of the appropriate type (image, video, pdf)
+     */
+
   }, {
     key: "getPreview",
     value: function () {
-      var _getPreview = _asyncToGenerator(regeneratorRuntime.mark(function _callee4(file) {
+      var _getPreview = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(file) {
         var blob, _file$type$split3, _file$type$split4, mimetype, subtype, newFile, previewEl, url, pdfBlob, text;
 
         return regeneratorRuntime.wrap(function _callee4$(_context4) {
@@ -358,7 +400,9 @@ var FileSelect = function () {
                 throw new Error('Type Error. getPreview expected file object');
 
               case 2:
-                _file$type$split3 = file.type.split('/'), _file$type$split4 = _slicedToArray(_file$type$split3, 2), mimetype = _file$type$split4[0], subtype = _file$type$split4[1];
+                _file$type$split3 = file.type.split('/'), _file$type$split4 = _slicedToArray(_file$type$split3, 2), mimetype = _file$type$split4[0], subtype = _file$type$split4[1]; // 1. Get blobs
+                // if the type is not text/plain, image/heic, image, video or pdf
+                // then create default svg file
 
                 if (!(file.type === 'image/heic' || file.type === 'image/heif')) {
                   _context4.next = 12;
@@ -371,6 +415,7 @@ var FileSelect = function () {
 
               case 7:
                 blob = _context4.sent;
+                // attach converted file to fileObject:
                 newFile = FileSelect.blobToFile(blob, file);
                 file.heicConvert = newFile;
                 _context4.next = 13;
@@ -391,7 +436,8 @@ var FileSelect = function () {
                   url = URL.createObjectURL(blob);
                 } else {
                   previewEl = FileSelect.createNoPreview();
-                }
+                } // 3. create preview Element from URL object
+
 
                 _context4.t0 = mimetype;
                 _context4.next = _context4.t0 === 'application' ? 18 : _context4.t0 === 'text' ? 27 : _context4.t0 === 'video' ? 38 : _context4.t0 === 'audio' ? 42 : _context4.t0 === 'image' ? 44 : 46;
@@ -419,6 +465,7 @@ var FileSelect = function () {
                 break;
 
               case 25:
+                // default for other application subtypes
                 previewEl = FileSelect.createNoPreview();
 
               case 26:
@@ -442,6 +489,7 @@ var FileSelect = function () {
                 break;
 
               case 36:
+                // default for other text types i.e. rtf
                 previewEl = FileSelect.createNoPreview();
 
               case 37:
@@ -470,6 +518,7 @@ var FileSelect = function () {
                 previewEl = FileSelect.createNoPreview();
 
               case 47:
+                // revokeObjectUrls onload (except for audio which is handled in the createAudioElement method
                 if (previewEl && mimetype !== 'audio' && mimetype !== 'image' && mimetype !== 'application') {
                   previewEl.onload = function () {
                     URL.revokeObjectURL(url);
@@ -477,6 +526,7 @@ var FileSelect = function () {
                 }
 
                 if (previewEl) {
+                  // add mimetype and subtype to previewEl dataset
                   previewEl.dataset.mimetype = mimetype;
                   previewEl.dataset.subtype = subtype;
                 }
@@ -513,7 +563,7 @@ var FileSelect = function () {
       if (validObj.types.includes(type)) {
         validObj.valid = true;
       } else {
-        validObj.valid = false;
+        validObj.valid = false; // call optional client defined function
 
         if (this.onInvalidType instanceof Function) {
           this.onInvalidType.call(null, validObj);
@@ -668,7 +718,7 @@ var FileSelect = function () {
   }, {
     key: "getHEICBlob",
     value: function () {
-      var _getHEICBlob = _asyncToGenerator(regeneratorRuntime.mark(function _callee5(file) {
+      var _getHEICBlob = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(file) {
         var _yield$import, heic2any, blob;
 
         return regeneratorRuntime.wrap(function _callee5$(_context5) {
@@ -779,6 +829,7 @@ var FileSelect = function () {
       var aTypes = allowedTypes;
 
       if (typeof aTypes === 'string') {
+        // convert string to array, i.e. allowedTypes = "image/jpeg" => ["image/jpeg"]
         aTypes = [aTypes];
       }
 
@@ -786,7 +837,7 @@ var FileSelect = function () {
         return type;
       });
       var typeArray = [];
-      var messageArray = [];
+      var messageArray = []; // push remaining types
 
       if (types.length > 0) {
         Object.values(types).forEach(function (type) {

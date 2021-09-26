@@ -136,6 +136,16 @@ const myInput = document.querySelector('#myInput')
 const fileSelect = new FileSelect("*", { fileInput : myInput}
 ```
 
+### Single file select only
+
+---
+
+By default, file select allows multiple files to be selected. To turn this off, pass this option into the constructor:
+
+```js
+const fileSelect = new FileSelect('*', { multiple: false });
+```
+
 ### Prevent FileSelect from adding a file input element to the DOM
 
 ---

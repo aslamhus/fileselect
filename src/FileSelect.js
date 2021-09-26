@@ -17,6 +17,8 @@
  *      - a client defined function to be called when the file has been read.
  * @param {Function} options.onInvalidType
  *      - a client defined function to be called when there is an invalid type
+ * @param {Object} options.multiple
+ *      - can multiple files be selected. By default set to true.
  * @param {Object} options.colors
  *      - icon colors. For more info see documentation at [createDefaultIcon]{@link createDefaultIcon}
  * @param {Object} options.theme
@@ -39,6 +41,7 @@ export class FileSelect {
       onReaderProgress: null,
       onReadFileComplete: null,
       onInvalidType: null,
+      multiple: null,
       colors: null,
       theme: null,
       filesize: null,
@@ -59,6 +62,7 @@ export class FileSelect {
     this.preview = options.preview;
     this.onInvalidType = options.onInvalidType;
     this.filesize = options.filesize || 100000000;
+    this.multiple = options.multiple === false ? false : true;
     this.validateArguments(allowedTypes, options);
   }
 
@@ -83,7 +87,7 @@ export class FileSelect {
     this.fileInput.type = 'file';
     this.fileInput.id = Date.now();
     this.fileInput.style.display = 'none';
-    this.fileInput.multiple = 'true';
+    if (this.multiple) this.fileInput.multiple = 'true';
     document.body.append(this.fileInput);
 
     return this.fileInput;
