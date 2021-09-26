@@ -9,7 +9,7 @@
   "scripts": {
     "test": "mocha",
     "build": "bin/build.sh",
-    "build-dev": "bin/build-dev.sh",
+    "build-yalc": "bin/build.sh && yalc publish --push",
     "start": "webpack serve --config ./src/build/webpack.dev.js"
   },
   "repository": {

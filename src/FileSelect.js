@@ -67,7 +67,7 @@ export class FileSelect {
   }
 
   validateArguments(allowedTypes, { fileInput }) {
-    if (fileInput) {
+    if (fileInput !== false) {
       // find fileInput tag, if not found create
       this.fileInput = fileInput;
       if (!this.fileInput?.tagName) {
