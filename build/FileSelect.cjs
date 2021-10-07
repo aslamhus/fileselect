@@ -216,13 +216,14 @@ var FileSelect = function () {
                 Object.values(files).forEach(function (file) {
                   filesRead.push(_this2.handleFile(file, _this2.allowedTypes));
                 });
-                _context2.next = 4;
+                console.log('readFiles test');
+                _context2.next = 5;
                 return Promise.all(filesRead);
 
-              case 4:
-                return _context2.abrupt("return", filesRead);
-
               case 5:
+                return _context2.abrupt("return", _context2.sent);
+
+              case 6:
               case "end":
                 return _context2.stop();
             }

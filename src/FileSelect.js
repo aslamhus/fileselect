@@ -89,7 +89,6 @@ export class FileSelect {
     this.fileInput.style.display = 'none';
     if (this.multiple) this.fileInput.multiple = 'true';
     document.body.append(this.fileInput);
-
     return this.fileInput;
   }
 
@@ -152,8 +151,7 @@ export class FileSelect {
     Object.values(files).forEach((file) => {
       filesRead.push(this.handleFile(file, this.allowedTypes));
     });
-    await Promise.all(filesRead);
-    return filesRead;
+    return await Promise.all(filesRead);
   }
 
   /**
