@@ -68,27 +68,16 @@ fileSelect.getIcon(file).then((icon) => {
 
 ### Read the files
 
-To prepare to upload the files, you can use the `readFiles` to read each file object as a `Data:URL` representing the files contents. After the files are read you can upload the file or do whatever you need to with it. The readFiles method returns an array of `Promises` which resolve to the `Data:URL`. You can read files individually like so:
+To prepare to upload the files, you can use the `readFiles` method to read each file as a `Data:URL` representing the file contents. After the files are read you can upload the file or do whatever you need to with it. The readFiles method returns an array of DataURL Objects or a single DataURL object depending on the arguments supplied. Example:
 
 ```js
-fileSelect.readFiles(fileList).then((readingFiles) => {
-  readingFiles.forEach((read) => {
-    read.then((file) => {
-      // ready to be sent to the server
-    });
-  });
+fileSelect.readFiles(fileList).then((dataURLS) => {
+  // files are ready to go!
+  console.log(dataURLs);
 });
 ```
 
-or wait for all of the files to be read:
-
-```js
-fileSelect.readFiles(fileList).then((readingFiles) => {
-  Promise.all(readingFiles).then((files) => {
-    // handle array of files
-  });
-});
-```
+_Note: files must be instance of the [File Object](https://developer.mozilla.org/en-US/docs/Web/API/File) from a file input element or a `DataTransfer.`_
 
 ## Callbacks
 
@@ -101,7 +90,7 @@ Each time a file is read, `onFileReadComplete` is called. You can access the fil
 ```js
 const fileSelect = new FileSelect('*', {
   onFileReadComplete: function (file) {
-    console.log('file object', file);
+    console.log(file);
   },
 });
 ```
@@ -121,42 +110,30 @@ By default if an unallowed file type is selected, **FileSelect** will throw an e
 
 ```js
 const onInvalidType = (err) => {
-  alert('invalid type, ' + err.message);
+  console.error('invalid type, ' + err.message);
 };
 ```
 
 ## Options
 
-### Use a specific file input element
+### File Input Element
 
 ---
+
+By default, **FileSelect** appends a hidden `File Input` to the DOM. But you can tell FileSelect to use a specific FileInput instead.
 
 ```js
 const myInput = document.querySelector('#myInput')
 const fileSelect = new FileSelect("*", { fileInput : myInput}
 ```
 
-### Single file select only
-
----
-
-By default, file select allows multiple files to be selected. To turn this off, pass this option into the constructor:
-
-```js
-const fileSelect = new FileSelect('*', { multiple: false });
-```
-
-### Prevent FileSelect from adding a file input element to the DOM
-
----
-
-This might be useful if you are receiving a filelist or fileobject from a datatransfer
+You can also prevent FileSelect from adding a file input element to the DOM altogether. This can be useful when you are receiving a filelist or fileobject from a datatransfer
 
 ```js
 const fileSelect = new FileSelect('*', { fileInput: false });
 ```
 
-### Change color theme of file icons
+### Change color theme for the file icon previews
 
 ---
 
@@ -180,20 +157,6 @@ const colors = {
 };
 const fileSelect = new FileSelect('*', { colors: colors });
 ```
-
-### Read Files without file selection
-
----
-
-If you do not want to trigger the file select window, but simply want to read the files and/or generate previews you can use the **handleFile** method.
-
-```js
-let file = myFile;
-const fileSelect = new FileSelect();
-let readFiles = fileSelect.handleFile(file);
-```
-
-_Note: The files must be instances of the [File Object](https://developer.mozilla.org/en-US/docs/Web/API/File) from a file input element or a `DataTransfer.`_
 
 ### Specify which file types are allowed
 
