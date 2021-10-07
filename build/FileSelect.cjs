@@ -213,10 +213,15 @@ var FileSelect = function () {
             switch (_context2.prev = _context2.next) {
               case 0:
                 filesRead = [];
+
+                if (!files.hasOwnProperty('length')) {
+                  _context2.next = 6;
+                  break;
+                }
+
                 Object.values(files).forEach(function (file) {
                   filesRead.push(_this2.handleFile(file, _this2.allowedTypes));
                 });
-                console.log('readFiles test');
                 _context2.next = 5;
                 return Promise.all(filesRead);
 
@@ -224,11 +229,18 @@ var FileSelect = function () {
                 return _context2.abrupt("return", _context2.sent);
 
               case 6:
+                _context2.next = 8;
+                return this.handleFile(files, this.allowedTypes);
+
+              case 8:
+                return _context2.abrupt("return", _context2.sent);
+
+              case 9:
               case "end":
                 return _context2.stop();
             }
           }
-        }, _callee2);
+        }, _callee2, this);
       }));
 
       function readFiles(_x2) {
@@ -537,8 +549,6 @@ var FileSelect = function () {
         if (e.lengthComputable) {
           var rprogress = parseInt(e.loaded / e.total * 100, 10);
         }
-
-        console.log('reader progress data', rprogress);
 
         _this4.progress(e, file);
       };

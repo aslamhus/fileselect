@@ -146,12 +146,23 @@ export class FileSelect {
     return this.fileList;
   }
 
+  /**
+   * Reads files as DataURLs and returns a single or array of files.
+   *
+   * @param {FileList|Array|File} files - the file(s) to be read
+   * @returns {Array|File}
+   */
   async readFiles(files) {
     const filesRead = [];
-    Object.values(files).forEach((file) => {
-      filesRead.push(this.handleFile(file, this.allowedTypes));
-    });
-    return await Promise.all(filesRead);
+    if (files.hasOwnProperty('length')) {
+      // is FileList or Array
+      Object.values(files).forEach((file) => {
+        filesRead.push(this.handleFile(file, this.allowedTypes));
+      });
+      return await Promise.all(filesRead);
+    }
+    // is single file
+    return await this.handleFile(files, this.allowedTypes);
   }
 
   /**
@@ -513,7 +524,6 @@ export class FileSelect {
       if (e.lengthComputable) {
         var rprogress = parseInt((e.loaded / e.total) * 100, 10);
       }
-      console.log('reader progress data', rprogress);
       this.progress(e, file);
     };
     reader.onload = ((f) => (e) => {
