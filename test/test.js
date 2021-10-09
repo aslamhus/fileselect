@@ -187,3 +187,37 @@ describe('Get a preview of a video', async () => {
     expect(icon.tagName).to.equal('VIDEO');
   });
 });
+
+/**
+ * This test fails currently because the handle file method does not
+ * add the file to the filelist property of FileSelect nor does it
+ * add the file to the file input element
+ */
+describe('Return all files from fileSelect.getFiles()', async () => {
+  it('should return a file list with 1 file', async () => {
+    const f = new File([''], 'filename.mp4', {
+      type: 'video/mp4',
+      lastModified: '',
+    });
+    const FS = new FileSelect();
+    const file = await FS.handleFile(f);
+    FS.fileList = [file];
+    const fileList = FS.getFiles();
+    expect(fileList.length).to.equal(1);
+  });
+});
+
+describe('Remove files from fileList and input file', async () => {
+  it('should return an empty file list', async () => {
+    const f = new File([''], 'filename.mp4', {
+      type: 'video/mp4',
+      lastModified: '',
+    });
+    const FS = new FileSelect();
+    const file = await FS.handleFile(f);
+    FS.fileList = [file];
+    FS.removeFiles();
+    expect(FS.fileList.length).to.equal(0);
+    expect(FS.fileInput.value).to.equal(null || '');
+  });
+});

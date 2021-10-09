@@ -199,6 +199,7 @@ var FileSelect = function () {
     key: "removeFiles",
     value: function removeFiles() {
       this.fileList = [];
+      this.fileInput.value = null;
       return this.fileList;
     }
   }, {

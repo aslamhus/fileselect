@@ -44,14 +44,16 @@ The basic usage automatically appends a (hidden) file input element `<input type
 ### Get previews of the files
 
 ```js
-fileSelect.select().then((fileList) => {
-  for (let file of fileList) {
-    fileSelect.getPreview(file).then((preview) => {
-      // appends a preview image to the document
-      document.body.append(preview);
-    });
-  }
+fileSelect.getPreview(file).then((preview) => {
+  // append a preview image to the document
+  document.body.append(preview);
 });
+```
+
+### Remove files
+
+```js
+fileSelect.removeFiles();
 ```
 
 ### Generate a file icon image for the selected file

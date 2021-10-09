@@ -141,14 +141,18 @@ export class FileSelect {
     return this.fileList;
   }
 
+  /**
+   * Removes files from filelist property as well as from the file input element
+   * @returns empty array
+   */
   removeFiles() {
     this.fileList = [];
+    this.fileInput.value = null;
     return this.fileList;
   }
 
   /**
    * Reads files as DataURLs and returns a single or array of files.
-   *
    * @param {FileList|Array|File} files - the file(s) to be read
    * @returns {Array|File}
    */
@@ -166,10 +170,12 @@ export class FileSelect {
   }
 
   /**
-   * Handle the image.
+   * Handle the file.
    * Summary.
    * 1) Add unique filename (re)Check the file types are valid.
    * 2) Read and return a file object with the data:URL.
+   * Note: Handle file currently does not add the file to FileSelect's fileList
+   * nor does it add the file to the input element.
    * @param {File} file
    *    - the file object to be handled. Must be instance of file
    * @param {String | String[]} allowedTypes
