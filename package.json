@@ -1,6 +1,6 @@
 {
   "name": "@aslamhus/fileselect",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Select and read a file for preview/upload",
   "main": "./build/FileSelect.cjs",
   "directories": {

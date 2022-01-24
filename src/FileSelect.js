@@ -158,7 +158,7 @@ export class FileSelect {
    */
   async readFiles(files) {
     const filesRead = [];
-    if (files.hasOwnProperty('length')) {
+    if (files?.length) {
       // is FileList or Array
       Object.values(files).forEach((file) => {
         filesRead.push(this.handleFile(file, this.allowedTypes));
@@ -186,14 +186,22 @@ export class FileSelect {
   handleFile(file, allowedTypes) {
     return new Promise((resolve, reject) => {
       if (typeof file !== 'object' || !(file instanceof File)) {
-        reject(new Error('Invalid Argument Exception. Expected instance of file.'));
+        reject(
+          new Error(
+            'Invalid Argument Exception. Expected instance of file but found ' + typeof file
+          )
+        );
       }
       const f = file;
       // give file a unique filename based on date
-      f.uuid =
+      let uuidFileName =
         file?.name !== undefined
           ? file?.name.replace(/(?=\.[^.]+$)/, `-${Date.now()}`)
           : Date.now();
+      // remove spaces if there are any
+      uuidFileName = uuidFileName.replace(/\s+/g, '-');
+      console.log('uuidFileName', uuidFileName);
+      f.uuid = uuidFileName;
 
       // check filetype is allowed
       const types = this.checkFileTypes(file, this.allowedTypes || allowedTypes);

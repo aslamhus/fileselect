@@ -215,7 +215,7 @@ var FileSelect = function () {
               case 0:
                 filesRead = [];
 
-                if (!files.hasOwnProperty('length')) {
+                if (!(files !== null && files !== void 0 && files.length)) {
                   _context2.next = 6;
                   break;
                 }
@@ -257,11 +257,14 @@ var FileSelect = function () {
 
       return new Promise(function (resolve, reject) {
         if (_typeof(file) !== 'object' || !(file instanceof File)) {
-          reject(new Error('Invalid Argument Exception. Expected instance of file.'));
+          reject(new Error('Invalid Argument Exception. Expected instance of file but found ' + _typeof(file)));
         }
 
         var f = file;
-        f.uuid = (file === null || file === void 0 ? void 0 : file.name) !== undefined ? file === null || file === void 0 ? void 0 : file.name.replace(/(?=\.[^.]+$)/, "-".concat(Date.now())) : Date.now();
+        var uuidFileName = (file === null || file === void 0 ? void 0 : file.name) !== undefined ? file === null || file === void 0 ? void 0 : file.name.replace(/(?=\.[^.]+$)/, "-".concat(Date.now())) : Date.now();
+        uuidFileName = uuidFileName.replace(/\s+/g, '-');
+        console.log('uuidFileName', uuidFileName);
+        f.uuid = uuidFileName;
 
         var types = _this3.checkFileTypes(file, _this3.allowedTypes || allowedTypes);
 
