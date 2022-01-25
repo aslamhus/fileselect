@@ -30,7 +30,7 @@
     "@aslamhus/fileicon": "^2.0.0",
     "core-js": "^3.14.0",
     "heic2any": "^0.0.3",
-    "pdfjs-dist": "^2.8.335",
+    "pdfjs-dist": "~2.6.347",
     "regenerator-runtime": "^0.13.7",
     "worker-loader": "^3.0.8"
   },

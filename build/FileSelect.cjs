@@ -420,7 +420,7 @@ var FileSelect = function () {
                 }
 
                 _context4.t0 = mimetype;
-                _context4.next = _context4.t0 === 'application' ? 18 : _context4.t0 === 'text' ? 30 : _context4.t0 === 'video' ? 41 : _context4.t0 === 'audio' ? 45 : _context4.t0 === 'image' ? 47 : 50;
+                _context4.next = _context4.t0 === 'application' ? 18 : _context4.t0 === 'text' ? 30 : _context4.t0 === 'video' ? 41 : _context4.t0 === 'audio' ? 45 : _context4.t0 === 'image' ? 47 : 49;
                 break;
 
               case 18:
@@ -451,7 +451,7 @@ var FileSelect = function () {
                 previewEl = FileSelect.createNoPreview();
 
               case 29:
-                return _context4.abrupt("break", 51);
+                return _context4.abrupt("break", 50);
 
               case 30:
                 if (!(subtype === 'plain')) {
@@ -474,33 +474,31 @@ var FileSelect = function () {
                 previewEl = FileSelect.createNoPreview();
 
               case 40:
-                return _context4.abrupt("break", 51);
+                return _context4.abrupt("break", 50);
 
               case 41:
                 previewEl = document.createElement('video');
                 previewEl.preload = 'none';
                 previewEl.src = url;
-                return _context4.abrupt("break", 51);
+                return _context4.abrupt("break", 50);
 
               case 45:
                 previewEl = FileSelect.createAudioElement(url, file.type);
-                return _context4.abrupt("break", 51);
+                return _context4.abrupt("break", 50);
 
               case 47:
-                console.log('this.preview.backgroundImage', this);
-
                 if (this !== null && this !== void 0 && (_this$preview2 = this.preview) !== null && _this$preview2 !== void 0 && _this$preview2.backgroundImage) {
                   previewEl = FileSelect.createBackgroundImageDiv(url, file.type);
                 } else {
                   previewEl = FileSelect.createImg(url);
                 }
 
-                return _context4.abrupt("break", 51);
+                return _context4.abrupt("break", 50);
 
-              case 50:
+              case 49:
                 previewEl = FileSelect.createNoPreview();
 
-              case 51:
+              case 50:
                 if (previewEl && mimetype !== 'audio' && mimetype !== 'image' && mimetype !== 'application') {
                   previewEl.onload = function () {
                     URL.revokeObjectURL(url);
@@ -514,7 +512,7 @@ var FileSelect = function () {
 
                 return _context4.abrupt("return", previewEl);
 
-              case 54:
+              case 53:
               case "end":
                 return _context4.stop();
             }
