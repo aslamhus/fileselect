@@ -118,10 +118,12 @@ export class FileSelect {
       // handles files, resolves selectImage's promise when the files are read.
       this.fileInput.onchange = (e) => {
         const { files } = e.target;
+        // convert filelist to array
+        let fileListArray = Array.from(files);
         // add files to fileList
         this.fileList = [...this.fileList, ...files];
         // check each files type and size
-        files.forEach((file) => {
+        for (let file of fileListArray) {
           const types = this.checkFileTypes(file, this.allowedTypes);
           if (!types.valid) {
             reject(new Error(types.message));
@@ -129,7 +131,7 @@ export class FileSelect {
           if (file.size > this.filesize) {
             reject(new Error('Failed to select file, File size exceeded limit'));
           }
-        });
+        }
         resolve(files);
       };
       // trigger file selection.
@@ -194,13 +196,13 @@ export class FileSelect {
       }
       const f = file;
       // give file a unique filename based on date
+
       let uuidFileName =
         file?.name !== undefined
           ? file?.name.replace(/(?=\.[^.]+$)/, `-${Date.now()}`)
           : Date.now();
       // remove spaces if there are any
       uuidFileName = uuidFileName.replace(/\s+/g, '-');
-      console.log('uuidFileName', uuidFileName);
       f.uuid = uuidFileName;
 
       // check filetype is allowed
