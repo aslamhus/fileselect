@@ -174,11 +174,9 @@ var FileSelect = function () {
           var files = e.target.files;
           var fileListArray = Array.from(files);
           _this.fileList = [].concat(_toConsumableArray(_this.fileList), _toConsumableArray(files));
-          console.log('fileListArray', fileListArray);
 
           for (var _i2 = 0, _fileListArray = fileListArray; _i2 < _fileListArray.length; _i2++) {
             var file = _fileListArray[_i2];
-            console.log('file', file);
 
             var types = _this.checkFileTypes(file, _this.allowedTypes);
 
@@ -270,7 +268,6 @@ var FileSelect = function () {
         var f = file;
         var uuidFileName = (file === null || file === void 0 ? void 0 : file.name) !== undefined ? file === null || file === void 0 ? void 0 : file.name.replace(/(?=\.[^.]+$)/, "-".concat(Date.now())) : Date.now();
         uuidFileName = uuidFileName.replace(/\s+/g, '-');
-        console.log('uuidFileName', uuidFileName);
         f.uuid = uuidFileName;
 
         var types = _this3.checkFileTypes(file, _this3.allowedTypes || allowedTypes);

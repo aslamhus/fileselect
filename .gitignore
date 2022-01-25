@@ -5,5 +5,4 @@ yalc.lock
 logs
 .eslintrc.json
 .eslintignore
-bin
 .DS_Store
