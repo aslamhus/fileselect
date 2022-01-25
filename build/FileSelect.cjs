@@ -77,6 +77,7 @@ var FileSelect = function () {
     this.filesize = options.filesize || 100000000;
     this.multiple = options.multiple === false ? false : true;
     this.validateArguments(allowedTypes, options);
+    this.getPreview = this.getPreview.bind(this);
   }
 
   _createClass(FileSelect, [{
@@ -367,7 +368,9 @@ var FileSelect = function () {
     key: "getPreview",
     value: function () {
       var _getPreview = _asyncToGenerator(regeneratorRuntime.mark(function _callee4(file) {
-        var blob, _file$type$split3, _file$type$split4, mimetype, subtype, newFile, previewEl, url, pdfBlob, text;
+        var _this$preview2;
+
+        var blob, _file$type$split3, _file$type$split4, mimetype, subtype, newFile, previewEl, url, _this$preview, pdfBlob, isBgImage, text;
 
         return regeneratorRuntime.wrap(function _callee4$(_context4) {
           while (1) {
@@ -417,12 +420,12 @@ var FileSelect = function () {
                 }
 
                 _context4.t0 = mimetype;
-                _context4.next = _context4.t0 === 'application' ? 18 : _context4.t0 === 'text' ? 27 : _context4.t0 === 'video' ? 38 : _context4.t0 === 'audio' ? 42 : _context4.t0 === 'image' ? 44 : 46;
+                _context4.next = _context4.t0 === 'application' ? 18 : _context4.t0 === 'text' ? 30 : _context4.t0 === 'video' ? 41 : _context4.t0 === 'audio' ? 45 : _context4.t0 === 'image' ? 47 : 50;
                 break;
 
               case 18:
                 if (!(subtype === 'pdf')) {
-                  _context4.next = 25;
+                  _context4.next = 28;
                   break;
                 }
 
@@ -431,68 +434,73 @@ var FileSelect = function () {
 
               case 21:
                 pdfBlob = _context4.sent;
+                console.log(this, this.preview);
+                isBgImage = (this === null || this === void 0 ? void 0 : (_this$preview = this.preview) === null || _this$preview === void 0 ? void 0 : _this$preview.backgroundImage) || null;
+                console.log('isBgImage', isBgImage);
 
-                if (this.preview.backgroundImage) {
+                if (isBgImage) {
                   previewEl = FileSelect.createBackgroundImageDiv(pdfBlob, file.type);
                 } else {
                   previewEl = FileSelect.createImg(pdfBlob);
                 }
 
-                _context4.next = 26;
+                _context4.next = 29;
                 break;
 
-              case 25:
+              case 28:
                 previewEl = FileSelect.createNoPreview();
 
-              case 26:
-                return _context4.abrupt("break", 47);
+              case 29:
+                return _context4.abrupt("break", 51);
 
-              case 27:
+              case 30:
                 if (!(subtype === 'plain')) {
-                  _context4.next = 36;
+                  _context4.next = 39;
                   break;
                 }
 
-                _context4.next = 30;
+                _context4.next = 33;
                 return file.text();
 
-              case 30:
+              case 33:
                 text = _context4.sent;
                 previewEl = document.createElement('div');
                 previewEl.style.padding = '15px';
                 previewEl.textContent = text;
-                _context4.next = 37;
+                _context4.next = 40;
                 break;
 
-              case 36:
+              case 39:
                 previewEl = FileSelect.createNoPreview();
 
-              case 37:
-                return _context4.abrupt("break", 47);
+              case 40:
+                return _context4.abrupt("break", 51);
 
-              case 38:
+              case 41:
                 previewEl = document.createElement('video');
                 previewEl.preload = 'none';
                 previewEl.src = url;
-                return _context4.abrupt("break", 47);
+                return _context4.abrupt("break", 51);
 
-              case 42:
+              case 45:
                 previewEl = FileSelect.createAudioElement(url, file.type);
-                return _context4.abrupt("break", 47);
+                return _context4.abrupt("break", 51);
 
-              case 44:
-                if (this.preview.backgroundImage) {
+              case 47:
+                console.log('this.preview.backgroundImage', this);
+
+                if (this !== null && this !== void 0 && (_this$preview2 = this.preview) !== null && _this$preview2 !== void 0 && _this$preview2.backgroundImage) {
                   previewEl = FileSelect.createBackgroundImageDiv(url, file.type);
                 } else {
                   previewEl = FileSelect.createImg(url);
                 }
 
-                return _context4.abrupt("break", 47);
+                return _context4.abrupt("break", 51);
 
-              case 46:
+              case 50:
                 previewEl = FileSelect.createNoPreview();
 
-              case 47:
+              case 51:
                 if (previewEl && mimetype !== 'audio' && mimetype !== 'image' && mimetype !== 'application') {
                   previewEl.onload = function () {
                     URL.revokeObjectURL(url);
@@ -506,7 +514,7 @@ var FileSelect = function () {
 
                 return _context4.abrupt("return", previewEl);
 
-              case 50:
+              case 54:
               case "end":
                 return _context4.stop();
             }

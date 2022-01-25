@@ -64,6 +64,7 @@ export class FileSelect {
     this.filesize = options.filesize || 100000000;
     this.multiple = options.multiple === false ? false : true;
     this.validateArguments(allowedTypes, options);
+    this.getPreview = this.getPreview.bind(this);
   }
 
   validateArguments(allowedTypes, { fileInput }) {
@@ -305,7 +306,10 @@ export class FileSelect {
       case 'application':
         if (subtype === 'pdf') {
           const pdfBlob = await FileSelect.getPDF(url);
-          if (this.preview.backgroundImage) {
+          console.log(this, this.preview);
+          let isBgImage = this?.preview?.backgroundImage || null;
+          console.log('isBgImage', isBgImage);
+          if (isBgImage) {
             previewEl = FileSelect.createBackgroundImageDiv(pdfBlob, file.type);
           } else {
             previewEl = FileSelect.createImg(pdfBlob);
@@ -339,7 +343,7 @@ export class FileSelect {
         break;
 
       case 'image':
-        if (this.preview.backgroundImage) {
+        if (this?.preview?.backgroundImage) {
           previewEl = FileSelect.createBackgroundImageDiv(url, file.type);
         } else {
           previewEl = FileSelect.createImg(url);
