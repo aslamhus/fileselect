@@ -14,18 +14,40 @@ This package depends on [Alex Corvi's Heic2any](https://alexcorvi.github.io/heic
 npm install @aslamhus/fileselect
 ```
 
-## Import
+## Installing
+
+You can clone the repo from github:
+
+```bash
+git clone https://github.com/aslamhus/fileselect.git
+```
+
+or install with node
+
+```bash
+npm install @aslamhus/fileselect
+```
+
+## Getting Started
+
+Once you've installed or cloned the repo, simply import it:
 
 For node users:
 
 ```js
-import FileSelect from '@aslamhus/fileselect';
+import { FileSelect } from '@aslamhus/fileselect';
 ```
 
-In the browser, with no module bundler:
+In the browser, with no module bundler (notice the .mjs file extension)
 
 ```js
-import FileSelect from '../lib/FileSelect.js';
+import { FileSelect } from '../lib/FileSelect.mjs';
+```
+
+or add it with a script tag
+
+```html
+<script src="../lib/FileSelect.js"></script>
 ```
 
 ## Basic Usage
@@ -63,7 +85,7 @@ This could be useful if you want to display a list of the selected files.
 
 ```js
 fileSelect.getIcon(file).then((icon) => {
-  // appends a file icon image to the document
+  // append a file icon image to the document
   document.body.append(icon);
 });
 ```
