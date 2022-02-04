@@ -29,8 +29,8 @@
  *      - sets whether preview returns div element with background image (true) or img element (false) (default)
  */
 
-import 'core-js/stable';
-import 'regenerator-runtime/runtime';
+import 'core-js';
+import 'regenerator-runtime';
 import { FileIcon } from '@aslamhus/fileicon';
 
 export class FileSelect {
