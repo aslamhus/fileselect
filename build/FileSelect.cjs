@@ -5,9 +5,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.FileSelect = void 0;
 
-require("core-js");
+require("core-js/stable");
 
-require("regenerator-runtime");
+require("regenerator-runtime/runtime");
 
 var _fileicon = require("@aslamhus/fileicon");
 
