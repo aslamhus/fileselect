@@ -53,15 +53,24 @@ or add it with a script tag
 ## Basic Usage
 
 **Note:** FileSelect should only be invoked after the DOM has loaded.
-the basic usage assumes all files types are allowed `("\*")`. You can change this option (see Options)
+The basic usage allows all files types and multiple file selection. You can change these option (see Options below)
 
 ### Trigger a file select window
+
+Calling **FileSelect's** `select` method will trigger a file select window in the browser. `select` returns a promise which resolves to a `FileList` array.
 
 ```js
 const fileSelect = new FileSelect();
 fileSelect.select().then((files) => {
   // do something with the files
 });
+```
+
+For convenience, the `FileList` array has special methods assigned to it: `getPreviews`, `getIcons` or `readFiles`.
+If you want to quickly read your files you could:
+
+```js
+const readFiles = await fileSelect.select().then((files) => files.readFiles());
 ```
 
 ### Get previews of the files
@@ -86,12 +95,12 @@ fileSelect.readFiles(myFiles).then((dataURLS) => {
 });
 ```
 
-_Note: files must be instance of the [File Object](https://developer.mozilla.org/en-US/docs/Web/API/File) i.e. an object from a file input element or a `DataTransfer.`_
+_Note: files must be instance of the [File Object](https://developer.mozilla.org/en-US/docs/Web/API/File) i.e. an object from a `FileList` or a `DataTransfer.`_
 
 ### Generate a file icon of the selected file
 
-FileSelect can create file icons for your selected files. `getIcon()`.
-To dispay the file icon, simply append to the dom.
+FileSelect can create file icons for your selected files using the `getIcon` method.
+To dispay the file icon, simply write it to the `DOM`.
 
 **FileSelect** uses a set of default icons.
 
@@ -201,6 +210,14 @@ const fs = new FileSelect('image/*');
 | image/\*                     | all images      |
 | video/\*                     | all videos      |
 | [ 'image/png', 'video/mp4' ] | pngs and mp4s   |
+
+### Allow multiple file selection
+
+By default FileSelect allows multiple files to be selected. You can set this to false to restrict file select to one file only.
+
+```js
+new FileSelect('*', { multiple: false });
+```
 
 ### Set file size limit
 
