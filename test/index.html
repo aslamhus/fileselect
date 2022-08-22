@@ -1,142 +1,68 @@
-<!DOCTYPE html>
-<html lang="en-gb">
-  <body>
-    <head>
-      <style type="text/css">
-        body,
-        html {
-          padding: 20px;
-        }
-        #preview {
-          min-height: 50px;
-          margin-top: 15px;
-          background-color: #dedede;
-          border: 1px dotted black;
-        }
-        video,
-        img {
-          width: 100px;
-        }
-      </style>
-      <!-- Font Awesome -->
-      <script src="https://kit.fontawesome.com/88e0de7c9a.js" crossorigin="anonymous"></script>
-    </head>
-
-    <main>
-      <!-- <img src="./images/FINAL FANTASY XV_20200502123549.png" />
-      <img src="./images/file-alt-regular.svg" /> -->
-      <div class="add-item">
-        <h1>+New File</h1>
-        <button type="button" class="form-control-file" id="select">select</button>
-        <div id="preview"></div>
-      </div>
-    </main>
-
-    <script src="../lib/FileSelect.js"></script>
-    <!-- <script type="module"> -->
-    <script>
-      // import { FileSelect } from '../lib/FileSelect.mjs';
-      // if (module.hot) {
-      //   module.hot.accept(
-      //     ['../../node_modules/@aslamhus/fileselect/build/FileSelect.js'],
-      //     function () {
-      //       console.log('hot mod coming in......!');
-      //     }
-      //   );
-      // }
-
-      window.onload = async () => {
-        const selectBtn = document.querySelector('button#select');
-        const fileInput = document.querySelector('#file-input-test3');
-        selectBtn.onclick = selectBtn_onclick;
-      };
-
-      const selectBtn_onclick = (e) => {
-        const previewContainer = document.querySelector('#preview');
-        const onInvalidType = (validObj) => {
-          console.log('validObj', validObj);
-          alert('invalid type, ' + validObj.message);
-        };
-        const fileSelect = new FileSelect('*', {
-          fileInput: true,
-          theme: 'blue',
-          react: 'true',
-          multiple: false,
-          // onInvalidType: onInvalidType,
-        });
-        fileSelect.select().then((fileList) => {
-          // a filelist object (blobs)
-          // ready to generate previews
-
-          for (let file of fileList) {
-            // create container
-            const filePreview = document.createElement('div');
-            filePreview.style.display = 'block';
-            filePreview.style.position = 'relative';
-            // get icon
-            fileSelect.getIcon(file).then((icon) => {
-              console.log(icon);
-              renderThumb(icon, filePreview);
-            });
-            // get preview
-            fileSelect.getPreview(file).then((preview) => {
-              renderThumb(preview, filePreview);
-            });
-            // add filename
-            const p = document.createElement('p');
-            p.textContent = file.name;
-            p.style.cssText = `
-              display:inline-block;
-              position: absolute;
-              top: 50%;
-              left: 285px;
-              transform:tranlsateY(-50%)`;
-            filePreview.append(p);
-            previewContainer.append(filePreview);
-          }
-          fileSelect.readFiles(fileList).then((filePromises) => {
-            Promise.all(filePromises).then((files) => {
-              console.log('files', files);
-            });
-          });
-        });
-      };
-
-      function renderThumb(node, container) {
-        const div = document.createElement('div');
-        div.style.cssText = `
-            position:relative;
-            width:100px;
-            height:100px;
-            margin:10px;
-            font-size:9px;
-            overflow:hidden;
-            display:inline-block;
-        `;
-        let nodeCss = `
-      width:60%;
-      padding:5%;
-      -webkit-box-sizing:border-box;
-      box-sizing:border-box;
-      position:absolute;
-      top:50%;
-      left:50%;
-      transform:translate(-50%,-50%);
-      `;
-
-        if (!node) {
-          node = document.createElement('div');
-          node.id = 'test';
-          node.style.cssText = nodeCss;
-          node.style.height = '60%';
-          node.style.border = '1px dotted gray';
-        } else {
-          node.style.cssText = nodeCss;
-        }
-
-        div.append(node);
-        container.append(div);
-      }
-    </script>
-  </body>
-</html>
+<head><script defer src="test.js"></script></head>Html Webpack Plugin:
+<pre>
+  Error: Child compilation failed:
+  Module not found: Error: Can't resolve '/Applications/MAMP/htdocs/local_folder/@a  slamhus/npm/FileSelect/index.html' in '/Applications/MAMP/htdocs/local_folder/@as  lamhus/npm/FileSelect'
+  ModuleNotFoundError: Module not found: Error: Can't resolve '/Applications/MAMP/h  tdocs/local_folder/@aslamhus/npm/FileSelect/index.html' in '/Applications/MAMP/ht  docs/local_folder/@aslamhus/npm/FileSelect'
+      at /Applications/MAMP/htdocs/local_folder/@aslamhus/npm/FileSelect/node_modul  es/webpack/lib/Compilation.js:2013:28
+      at /Applications/MAMP/htdocs/local_folder/@aslamhus/npm/FileSelect/node_modul  es/webpack/lib/NormalModuleFactory.js:795:13
+      at eval (eval at create (/Applications/MAMP/htdocs/local_folder/@aslamhus/npm  /FileSelect/node_modules/tapable/lib/HookCodeFactory.js:33:10), <anonymous>:10:1)      at /Applications/MAMP/htdocs/local_folder/@aslamhus/npm/FileSelect/node_modul  es/webpack/lib/NormalModuleFactory.js:275:22
+      at eval (eval at create (/Applications/MAMP/htdocs/local_folder/@aslamhus/npm  /FileSelect/node_modules/tapable/lib/HookCodeFactory.js:33:10), <anonymous>:9:1)
+      at /Applications/MAMP/htdocs/local_folder/@aslamhus/npm/FileSelect/node_modul  es/webpack/lib/NormalModuleFactory.js:431:22
+      at /Applications/MAMP/htdocs/local_folder/@aslamhus/npm/FileSelect/node_modul  es/webpack/lib/NormalModuleFactory.js:124:11
+      at /Applications/MAMP/htdocs/local_folder/@aslamhus/npm/FileSelect/node_modul  es/webpack/lib/NormalModuleFactory.js:667:25
+      at /Applications/MAMP/htdocs/local_folder/@aslamhus/npm/FileSelect/node_modul  es/webpack/lib/NormalModuleFactory.js:852:8
+      at /Applications/MAMP/htdocs/local_folder/@aslamhus/npm/FileSelect/node_modul  es/webpack/lib/NormalModuleFactory.js:972:5
+  
+  - Compilation.js:2013 
+    [FileSelect]/[webpack]/lib/Compilation.js:2013:28
+  
+  - NormalModuleFactory.js:795 
+    [FileSelect]/[webpack]/lib/NormalModuleFactory.js:795:13
+  
+  
+  - NormalModuleFactory.js:275 
+    [FileSelect]/[webpack]/lib/NormalModuleFactory.js:275:22
+  
+  
+  - NormalModuleFactory.js:431 
+    [FileSelect]/[webpack]/lib/NormalModuleFactory.js:431:22
+  
+  - NormalModuleFactory.js:124 
+    [FileSelect]/[webpack]/lib/NormalModuleFactory.js:124:11
+  
+  - NormalModuleFactory.js:667 
+    [FileSelect]/[webpack]/lib/NormalModuleFactory.js:667:25
+  
+  - NormalModuleFactory.js:852 
+    [FileSelect]/[webpack]/lib/NormalModuleFactory.js:852:8
+  
+  - NormalModuleFactory.js:972 
+    [FileSelect]/[webpack]/lib/NormalModuleFactory.js:972:5
+  
+  - child-compiler.js:169 
+    [FileSelect]/[html-webpack-plugin]/lib/child-compiler.js:169:18
+  
+  - Compiler.js:564 
+    [FileSelect]/[webpack]/lib/Compiler.js:564:11
+  
+  - Compiler.js:1183 
+    [FileSelect]/[webpack]/lib/Compiler.js:1183:17
+  
+  
+  - Hook.js:18 Hook.CALL_ASYNC_DELEGATE [as _callAsync]
+    [FileSelect]/[tapable]/lib/Hook.js:18:14
+  
+  - Compiler.js:1179 
+    [FileSelect]/[webpack]/lib/Compiler.js:1179:33
+  
+  - Compilation.js:2784 finalCallback
+    [FileSelect]/[webpack]/lib/Compilation.js:2784:11
+  
+  - Compilation.js:3089 
+    [FileSelect]/[webpack]/lib/Compilation.js:3089:11
+  
+  
+  - Hook.js:18 Hook.CALL_ASYNC_DELEGATE [as _callAsync]
+    [FileSelect]/[tapable]/lib/Hook.js:18:14
+  
+</pre>

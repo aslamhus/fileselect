@@ -29,9 +29,16 @@
  *      - sets whether preview returns div element with background image (true) or img element (false) (default)
  */
 
+console.log('test');
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import { FileIcon } from '@aslamhus/fileicon';
+
+/**
+ * We want a composed method like so:
+ *
+ * fileSelect.select().readFiles().then(files)
+ */
 
 export class FileSelect {
   constructor(
@@ -109,6 +116,14 @@ export class FileSelect {
     return true;
   }
 
+  /**
+   *
+   * Select
+   *
+   * Triggers file select windows
+
+   * @returns {FileList}
+   */
   select() {
     return new Promise((resolve, reject) => {
       if (!this.fileInput) {
@@ -133,6 +148,7 @@ export class FileSelect {
             reject(new Error('Failed to select file, File size exceeded limit'));
           }
         }
+        files.this = this;
         resolve(files);
       };
       // trigger file selection.
