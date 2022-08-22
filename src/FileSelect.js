@@ -23,8 +23,8 @@
  *      - icon colors. For more info see documentation at [createDefaultIcon]{@link createDefaultIcon}
  * @param {Object} options.theme
  *      - icon theme. For more info see documentation at [createDefaultIcon]{@link createDefaultIcon}
- * @param {Object} options.filesize
- *      - sets a filesize limit in bytes, default is 100000000 (~100 MB)
+ * @param {Object} options.fileSize
+ *      - sets a fileSize limit in bytes, default is 100000000 (~100 MB)
  * @param {Object} options.preview.backgroundImage
  *      - sets whether preview returns div element with background image (true) or img element (false) (default)
  */
@@ -41,10 +41,11 @@ export class FileSelect {
       onReaderProgress: null,
       onReadFileComplete: null,
       onInvalidType: null,
+      onFileSizeLimitExceeded: null,
       multiple: null,
       colors: null,
       theme: null,
-      filesize: null,
+      fileSize: null,
       preview: {
         backgroundImage: false,
       },
@@ -61,7 +62,8 @@ export class FileSelect {
     this.fileList = [];
     this.preview = options.preview;
     this.onInvalidType = options.onInvalidType;
-    this.filesize = options.filesize || 100000000;
+    this.onFileSizeLimitExceeded = options.onFileSizeLimitExceeded;
+    this.fileSize = options.fileSize || 100000000;
     this.multiple = options.multiple === false ? false : true;
     this.validateArguments(allowedTypes, options);
     this.getPreview = this.getPreview.bind(this);
@@ -82,6 +84,8 @@ export class FileSelect {
     if (allowedTypes) this.allowedTypes = allowedTypes;
     else this.allowedTypes = '*';
   }
+
+  setFileSize;
 
   createFileInput() {
     this.fileInput = document.createElement('input');
@@ -129,11 +133,16 @@ export class FileSelect {
           if (!types.valid) {
             reject(new Error(types.message));
           }
-          if (file.size > this.filesize) {
-            reject(new Error('Failed to select file, File size exceeded limit'));
+          if (file.size > this.fileSize) {
+            const fileSizeError = new Error('Failed to select file, File size exceeded limit');
+            if (this.onFileSizeLimitExceeded instanceof Function) {
+              this.onFileSizeLimitExceeded(fileSizeError);
+            } else {
+              reject(fileSizeError);
+            }
           }
         }
-        files.read = () => {
+        files.readFiles = () => {
           return Promise.resolve(this.readFiles(fileListArray));
         };
         files.getPreviews = () => {
@@ -221,7 +230,7 @@ export class FileSelect {
         reject(new Error(types.message));
       }
       // check file size is allowed
-      if (file.size > this.filesize) {
+      if (file.size > this.fileSize) {
         reject(new Error('Failed to handle file, File size exceeded limit'));
       }
       // read the file
