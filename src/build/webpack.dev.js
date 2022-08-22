@@ -7,11 +7,11 @@ module.exports = merge(common, {
   devtool: 'source-map', // source-map for no eval
 
   devServer: {
-    open: true,
-    openPage: 'test/index.html',
-    watchContentBase: true,
-    contentBase: path.join(__dirname, '../../'),
-    publicPath: '/',
+    devMiddleware: {
+      publicPath: '/',
+    },
+    static: './',
+    open: ['./test/index.html'],
     compress: true,
     hot: true,
     host: 'localhost',
