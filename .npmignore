@@ -8,3 +8,4 @@ logs
 .eslintrc.json
 .eslintignore
 bin
+src/build/compilation-stats.json
