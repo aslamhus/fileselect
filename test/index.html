@@ -1,38 +1,287 @@
 <!DOCTYPE html>
 <html lang="en-gb">
+  <head>
+    <style type="text/css">
+      body,
+      html {
+        padding: 2rem;
+      }
+      .preview {
+        background-color: #dedede;
+      }
+      button {
+        margin: 0.55rem 0 !important;
+      }
+      .preview p {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .example {
+        border: 1px solid lightgray;
+        padding: 1.5rem;
+        margin: 2rem 0;
+      }
+      video,
+      img {
+        width: 100px;
+      }
+    </style>
+    <!-- Bootstrap -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css"
+      integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx"
+      crossorigin="anonymous"
+    />
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/88e0de7c9a.js" crossorigin="anonymous"></script>
+    <!-- Prism -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css"
+      rel="stylesheet"
+    />
+  </head>
   <body>
-    <head>
-      <style type="text/css">
-        body,
-        html {
-          padding: 20px;
-        }
-        #preview {
-          min-height: 50px;
-          margin-top: 15px;
-          background-color: #dedede;
-          border: 1px dotted black;
-        }
-        video,
-        img {
-          width: 100px;
-        }
-      </style>
-      <!-- Font Awesome -->
-      <script src="https://kit.fontawesome.com/88e0de7c9a.js" crossorigin="anonymous"></script>
-    </head>
-
     <main>
-      <!-- <img src="./images/FINAL FANTASY XV_20200502123549.png" />
-      <img src="./images/file-alt-regular.svg" /> -->
-      <div class="add-item">
-        <h1>+New File</h1>
-        <button type="button" class="form-control-file" id="select">select</button>
-        <div id="preview"></div>
+      <h1>File Select</h1>
+      <p>
+        <em>File Select</em> is a library to simplify using the
+        <a href="https://developer.mozilla.org/en-US/docs/Web/API/File_API">File API</a>.
+      </p>
+      <ul>
+        <li>Select files</li>
+        <li>Read files in order to upload to a server</li>
+        <li>
+          Create previews to display in the browser for file types including: movies, images
+          (including heic!) and pdfs.
+        </li>
+        <li>Restrict the kinds of files that can be selected</li>
+        <li>produce custom file icons for each file type</li>
+      </ul>
+      <p>
+        Below are some simple examples to get you started.<br />
+        For a complete README, checkout the repo
+        <a href="https://github.com/aslamhus/fileselect">@aslamhus/fileselect</a>
+      </p>
+      <!-- File select -->
+      <div id="file-select" class="example">
+        <h2>Select and get files</h2>
+        <p>Yes, it's that easy!</p>
+        <div class="code">
+          <pre>
+            <code class="language-javascript">
+              const fileSelect = new FileSelect();
+              fileSelect.select().then((fileList) => {
+                // write names of files 
+              })
+              
+          </code>
+        </pre>
+        </div>
+        <h3>Try it</h3>
+        <button type="button" class="btn btn-primary" type="button">select</button>
+        <div class="preview"></div>
+      </div>
+
+      <!-- Get Previews -->
+      <div id="get-previews" class="example">
+        <h2>Get Previews</h2>
+        <p>
+          Previews return image elements for each file whose src is an ObjectURL. Read more about
+          <a
+            href="https://developer.mozilla.org/en-US/docs/Web/API/File_API/Using_files_from_web_applications#example_using_object_urls_to_display_images"
+            >ObjectURLs</a
+          >. Each image will revoke its ObjectURL when it loads, so your browser resources don't get
+          overstuffed.
+        </p>
+        <p></p>
+        <div class="code">
+          <pre>
+            <code class="language-javascript">
+              const fileSelect = new FileSelect();
+              fileSelect.select().then((files) => {
+                files.getPreviews().then(preview => {
+                  document.body.append(...previews)
+                })
+              })
+
+              // with async/await
+              const selected = await fileSelect.select();
+              const previews = await selected.getPreviews();
+              document.body.append(...previews)
+              
+          </code>
+        </pre>
+        </div>
+        <h3>Try it</h3>
+        <p className="text-muted">Try getting previews for movies, sound files, pdf or images</p>
+
+        <button type="button" class="btn btn-primary" type="button">select</button>
+        <div class="preview">
+          <div class="spinner-border text-primary" role="status" style="display: none">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Read files -->
+      <div id="read-files" class="example">
+        <h2>Read files and upload them</h2>
+        <p>
+          <em>FileSelect</em> supports conversion of files to base64 so they can be sent to a
+          server.
+        </p>
+        <div class="code">
+          <pre>
+          <code class="language-javascript">
+            const fileSelect = new FileSelect();
+            fileSelect.select().then((files) => {
+                files.readFiles().then(dataURLs => {
+                  // send dataURLs to server
+                })
+            })
+
+        </code>
+      </pre>
+        </div>
+      </div>
+
+      <!-- Restrict files -->
+      <div id="restrict-file-type" class="example">
+        <h2>Restrict file type</h2>
+        <p>
+          By default, <em>FileSelect</em> allows all file types. In this example we restrict the
+          selectable files to pdfs by passing the mimetype 'application/pdf' to the FileSelect
+          constructor.
+        </p>
+        <p></p>
+        <div class="code">
+          <pre>
+            <code class="language-javascript">
+              const fileSelect = new FileSelect('application/pdf');
+              fileSelect.select().then((files) => {
+               // do something with the files
+              }).catch(error => {
+                // write the error 
+              })
+          </code>
+        </pre>
+        </div>
+        <h3>Try it</h3>
+        <p className="text-muted">Try uploading pdfs and non pdfs</p>
+        <button type="button" class="btn btn-primary" type="button">select</button>
+        <div class="preview">
+          <div class="spinner-border text-primary" role="status" style="display: none">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Restrict files -->
+      <div id="restrict-file-type-multiple" class="example">
+        <h2>Restrict to multiple file types</h2>
+        <p>Allow pngs and jpegs</p>
+        <p></p>
+        <div class="code">
+          <pre>
+            <code class="language-javascript">
+              const fileSelect = new FileSelect(['image/jpeg','images/png']);
+              fileSelect.select().then((files) => {
+               // do something with the files
+              }).catch(error => {
+                // write the error 
+              })
+
+          </code>
+        </pre>
+        </div>
+        <h3>Try it</h3>
+        <button type="button" class="btn btn-primary" type="button">select</button>
+        <div class="preview">
+          <div class="spinner-border text-primary" role="status" style="display: none">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Get icons -->
+      <div id="get-icons" class="example">
+        <h2>Get icons</h2>
+        <p>
+          Helpful if you are building a file uploader. See
+          <a href="https://github.com/aslamhus/fileicon">@aslamhus/fileicon</a> for more
+          information.
+        </p>
+        <div class="code">
+          <pre>
+            <code class="language-javascript">
+              const fileSelect = new FileSelect();
+              fileSelect.select()
+              .then((files) => {
+                // note that getIcons returns a promise
+                // so we must use async/await
+                files.getIcons().then(icons => {
+                  document.body.append(...icons)
+                })
+                
+              })
+              
+          </code>
+        </pre>
+        </div>
+        <h3>Try it</h3>
+
+        <button type="button" class="btn btn-primary" type="button">select</button>
+        <div class="preview">
+          <div class="spinner-border text-primary" role="status" style="display: none">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Get icons with colors -->
+      <div id="get-icons-with-colors" class="example">
+        <h2>Get icons with custom colors</h2>
+
+        <div class="code">
+          <pre>
+          <code class="language-javascript">
+            const fileSelect = new FileSelect('*', {
+              colors : {
+                bg: 'transparent',
+                iconBg: 'darkblue',
+                textBg: 'rgba(250,250,250,0.2)',
+                text: '#FFF',
+                outline: 'grey',
+              },
+              }
+             });
+            fileSelect.select()
+            .then(files => {
+             files.getIcons().then(icons => {
+              document.body.append(...icons)
+             })
+            })
+            
+        </code>
+      </pre>
+        </div>
+        <h3>Try it</h3>
+
+        <button type="button" class="btn btn-primary" type="button">select</button>
+        <div class="preview">
+          <div class="spinner-border text-primary" role="status" style="display: none">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
       </div>
     </main>
 
     <!-- <script src="../lib/FileSelect.js"></script> -->
     <!-- <script type="module"> -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/autoloader/prism-autoloader.min.js"></script>
   </body>
 </html>

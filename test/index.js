@@ -1,67 +1,25 @@
-import { FileSelect } from '../src/FileSelect';
+import {
+  selectAndGetFiles,
+  getPreviews,
+  getIcons,
+  getIconsWithColors,
+  readFiles,
+  restrictFileType,
+  restrictFileTypeMultiple,
+} from './utils';
 
 if (module.hot) {
   module.hot.accept();
-  // module.hot.accept(['../lib/FileSelect.js'], function () {
-  //   console.log('hot mod coming in......!');
-  // });
 }
 
-window.onload = async () => {
-  const selectBtn = document.querySelector('button#select');
-  const fileInput = document.querySelector('#file-input-test3');
-  selectBtn.onclick = selectBtn_onclick;
-};
-
-const selectBtn_onclick = (e) => {
-  const previewContainer = document.querySelector('#preview');
-  const onInvalidType = (validObj) => {
-    console.log('validObj', validObj);
-    alert('invalid type, ' + validObj.message);
-  };
-  const fileSelect = new FileSelect('*', {
-    fileInput: true,
-    theme: 'blue',
-    react: 'true',
-    multiple: false,
-    // onInvalidType: onInvalidType,
-  });
-  fileSelect.select().then((fileList) => {
-    // a filelist object (blobs)
-    // ready to generate previews
-
-    for (let file of fileList) {
-      // create container
-      const filePreview = document.createElement('div');
-      filePreview.style.display = 'block';
-      filePreview.style.position = 'relative';
-      // get icon
-      fileSelect.getIcon(file).then((icon) => {
-        console.log(icon);
-        renderThumb(icon, filePreview);
-      });
-      // get preview
-      fileSelect.getPreview(file).then((preview) => {
-        renderThumb(preview, filePreview);
-      });
-      // add filename
-      const p = document.createElement('p');
-      p.textContent = file.name;
-      p.style.cssText = `
-        display:inline-block;
-        position: absolute;
-        top: 50%;
-        left: 285px;
-        transform:tranlsateY(-50%)`;
-      filePreview.append(p);
-      previewContainer.append(filePreview);
-    }
-    fileSelect.readFiles(fileList).then((filePromises) => {
-      Promise.all(filePromises).then((files) => {
-        console.log('files', files);
-      });
-    });
-  });
+window.onload = () => {
+  selectAndGetFiles();
+  getPreviews();
+  getIcons();
+  getIconsWithColors();
+  readFiles();
+  restrictFileType();
+  restrictFileTypeMultiple();
 };
 
 function renderThumb(node, container) {

@@ -149,6 +149,9 @@ export class FileSelect {
             reject(fileSizeError);
           }
         }
+        files.toArray = function () {
+          return Array.from(this);
+        };
         files.readFiles = () => {
           return Promise.resolve(this.readFiles(fileListArray));
         };
