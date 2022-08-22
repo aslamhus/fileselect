@@ -133,6 +133,15 @@ export class FileSelect {
             reject(new Error('Failed to select file, File size exceeded limit'));
           }
         }
+        files.read = () => {
+          return Promise.resolve(this.readFiles(fileListArray));
+        };
+        files.getPreviews = () => {
+          return Promise.all(fileListArray.map((file) => this.getPreview(file)));
+        };
+        files.getIcons = () => {
+          return Promise.all(fileListArray.map((file) => this.getIcon(file)));
+        };
         resolve(files);
       };
       // trigger file selection.
@@ -191,7 +200,7 @@ export class FileSelect {
       if (typeof file !== 'object' || !(file instanceof File)) {
         reject(
           new Error(
-            'Invalid Argument Exception. Expected instance of file but found ' + typeof file
+            'Invalid Argument Exception. Expected instance of File but found ' + typeof file
           )
         );
       }
@@ -306,9 +315,7 @@ export class FileSelect {
       case 'application':
         if (subtype === 'pdf') {
           const pdfBlob = await FileSelect.getPDF(url);
-          console.log(this, this.preview);
           let isBgImage = this?.preview?.backgroundImage || null;
-          console.log('isBgImage', isBgImage);
           if (isBgImage) {
             previewEl = FileSelect.createBackgroundImageDiv(pdfBlob, file.type);
           } else {
