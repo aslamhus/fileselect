@@ -27,7 +27,7 @@ module.exports = merge(common, {
       // directory: path.join(__dirname, '../../test'),
       // publicPath: '',
     },
-    // open: ['./test/index.html'],
+    open: ['./test/index.html'],
     // compress: true,
     // liveReload: false,
     hot: true,
