@@ -6,3 +6,4 @@ logs
 .eslintrc.json
 .eslintignore
 .DS_Store
+src/build/compilation-stats.json
