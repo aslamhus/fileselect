@@ -85,7 +85,15 @@ export class FileSelect {
     else this.allowedTypes = '*';
   }
 
-  setFileSize;
+  setFileSizeLimit(size) {
+    if (isNaN(size)) {
+      throw new Error(
+        'Invalid Argument. setFileSizeLimit expected number but found ' + typeof size
+      );
+    }
+    console.log('set file size limit', size);
+    this.fileSize = size;
+  }
 
   createFileInput() {
     this.fileInput = document.createElement('input');
@@ -136,10 +144,9 @@ export class FileSelect {
           if (file.size > this.fileSize) {
             const fileSizeError = new Error('Failed to select file, File size exceeded limit');
             if (this.onFileSizeLimitExceeded instanceof Function) {
-              this.onFileSizeLimitExceeded(fileSizeError);
-            } else {
-              reject(fileSizeError);
+              this.onFileSizeLimitExceeded(fileSizeError, file.size, this.fileSize);
             }
+            reject(fileSizeError);
           }
         }
         files.readFiles = () => {
