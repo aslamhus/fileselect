@@ -135,14 +135,46 @@ fileSelect.onFileReadComplete = (file) => {
 };
 ```
 
-### `onInvalidType`
+## Error handling
 
-By default if an unallowed file type is selected, **FileSelect** will throw an error. You can can add your own handler by passing a function to the `constructor`.
+The easiest way to handle errors is to add a catch block to FileSelect's
+methods.
 
 ```js
-const onInvalidType = (err) => {
-  console.error('invalid type, ' + err.message);
-};
+const fs = new FileSelect();
+fs.select()
+  .then((files) => {
+    // do something with your files
+  })
+  .catch((error) => {
+    // handle an invalid type error
+    // handle a fileSizeLimitExceeded error
+  });
+```
+
+### `onInvalidType` error
+
+By default if an unallowed file type is selected, **FileSelect** will throw an error. You can can add your own handler by passing a function to the options object in the `constructor`.
+
+```js
+const fs = new FileSelect('*', {
+  onInvalidType = (err) => {
+    console.error('invalid type, ' + err.message);
+  }
+ });
+```
+
+### `onFileSizeLimitExceeded` error
+
+By default if the file size limit is exceeded, **FileSelect** will throw an error. You can can add your own handler by passing a function to the options object in the `constructor`.
+
+```js
+
+const fs = new FileSelect('*', {
+  onFileSizeLimitExceeded = (err, fileSize, fileSizeLimit) => {
+    console.error('Filesize limit exceeded, ' + err.message);
+  }
+});
 ```
 
 ## Options
@@ -169,6 +201,15 @@ const fs = new FileSelect('image/*');
 | image/\*                     | all images      |
 | video/\*                     | all videos      |
 | [ 'image/png', 'video/mp4' ] | pngs and mp4s   |
+
+### Set file size limit
+
+To set the file size limit in bytes, add this option to the constructor, or use the `setFileSizeLimit` method.
+
+```js
+const fileSelect = new FileSelect('*', { fileSize: 1024 });
+fileSelect.setFileSizeLimit(2048);
+```
 
 ### File Input Element
 
