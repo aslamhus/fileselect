@@ -4,6 +4,8 @@ A library for the _File API_. Easily select, read, or create previews of files. 
 
 Github repo: [https://github.com/aslamhus/fileselect](https://github.com/aslamhus/fileselect)
 
+Check out some examples at [https://aslamhus.github.io/fileselect/about/](https://aslamhus.github.io/fileselect/about/)
+
 ## Dependencies
 
 This package depends on [Alex Corvi's Heic2any](https://alexcorvi.github.io/heic2any/) and [PDF.js](https://github.com/mozilla/pdf.js) to generate previews for Heic files and Pdfs.
