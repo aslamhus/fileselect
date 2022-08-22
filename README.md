@@ -305,6 +305,4 @@ Note: To run the test command, make sure you install all dependencies by running
 
 ## Examples
 
-open the test/index.html file in your browser to see examples.
-For full functionality, you should should serve index.html in your local environment. Opening index.html as a file in the browser may
-produce permissions errors.
+[https://aslamhus.github.io/fileselect/about/](https://aslamhus.github.io/fileselect/about/)
