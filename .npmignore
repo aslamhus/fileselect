@@ -9,3 +9,4 @@ logs
 .eslintignore
 bin
 src/build/compilation-stats.json
+about
