@@ -8,15 +8,15 @@ module.exports = merge(common, {
   mode: 'development',
   devtool: 'source-map', // source-map for no eval
   entry: {
-    test: './test/index.js',
+    about: './src/about/index.js',
   },
 
   plugins: [
     new HtmlWebpackPlugin({
       title: 'FileSelect test',
-      template: './test/index.html',
-      filename: './test/index.html',
-      chunks: ['test', 'FileSelect'],
+      template: './src/about/index.html',
+      filename: './about/index.html',
+      chunks: ['about', 'FileSelect'],
     }),
   ],
   devServer: {
@@ -27,7 +27,7 @@ module.exports = merge(common, {
       // directory: path.join(__dirname, '../../test'),
       // publicPath: '',
     },
-    open: ['./test/index.html'],
+    open: ['./about/index.html'],
     // compress: true,
     // liveReload: false,
     hot: true,

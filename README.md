@@ -57,16 +57,16 @@ The basic usage allows all files types and multiple file selection. You can chan
 
 ### Trigger a file select window
 
-Calling **FileSelect's** `select` method will trigger a file select window in the browser. `select` returns a promise which resolves to a `FileList` array.
+Calling **FileSelect's** `select` method will trigger a file select window in the browser. `select` returns a promise which resolves to a [FileList](https://developer.mozilla.org/en-US/docs/Web/API/FileList).
 
 ```js
 const fileSelect = new FileSelect();
-fileSelect.select().then((files) => {
+fileSelect.select().then((fileList) => {
   // do something with the files
 });
 ```
 
-For convenience, the `FileList` array has special methods assigned to it: `getPreviews`, `getIcons` or `readFiles`.
+For convenience, the returned `FileList` has extra methods assigned to it: `getPreviews`, `getIcons` or `readFiles` and `toArray`.
 If you want to quickly read your files you could:
 
 ```js
@@ -75,18 +75,22 @@ const readFiles = await fileSelect.select().then((files) => files.readFiles());
 
 ### Get previews of the files
 
-If you want to display a preview of the file, use the getPreview method.
+Use this method to display a preview of any file object.
 
 ```js
 fileSelect.getPreview(file).then((preview) => {
   // append a preview image to the document
   document.body.append(preview);
 });
+
+// with the select method
+
+const icons = await fileSelect.select().then((fileList) => fileList.getPreviews());
 ```
 
 ### Read the files
 
-To prepare to upload the files, you can use the `readFiles` method to read each file as a `Data:URL` representing the file contents. After the files are read you can upload the file or do whatever you need to with it. The readFiles method returns an array of DataURL Objects or a single DataURL object depending on the arguments supplied. Example:
+To prepare to upload files, you can use the `readFiles` method to read each file as a `Data:URL` representing the file contents. After the files are read you can upload the file or do whatever you need to with it. The readFiles method returns an array of DataURL Objects or a single DataURL object depending on the arguments supplied. Example:
 
 ```js
 fileSelect.readFiles(myFiles).then((dataURLS) => {
@@ -109,6 +113,10 @@ fileSelect.getIcon(file).then((icon) => {
   // append a file icon image to the document
   document.body.append(icon);
 });
+
+// with the select method
+
+const icons = await fileSelect.select().then((fileList) => fileList.getIcons());
 ```
 
 ### Remove files

@@ -10,6 +10,7 @@
     "test": "mocha",
     "build": "bin/build.sh",
     "build-yalc": "bin/build.sh && yalc publish --push",
+    "build-about": "webpack --config ./src/build/webpack.test.build.js",
     "start": "webpack serve --config ./src/build/webpack.dev.js"
   },
   "repository": {

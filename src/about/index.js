@@ -6,7 +6,7 @@ import {
   readFiles,
   restrictFileType,
   restrictFileTypeMultiple,
-} from './utils';
+} from './utils.js';
 
 if (module.hot) {
   module.hot.accept();
