@@ -25,7 +25,7 @@ const optimization = {
     }),
   ],
 };
-module.exports = merge(common, {
+module.exports = {
   // mode: process.env.NODE_ENV,
   mode: 'development',
   devtool: 'source-map', // source-map for no eval
@@ -41,9 +41,9 @@ module.exports = merge(common, {
       title: 'FileSelect about',
       template: './src/about/index.html',
       filename: './index.html',
-      chunks: ['about', 'FileSelect'],
+      chunks: ['about'],
     }),
   ],
   module: mod,
   optimization: optimization,
-});
+};

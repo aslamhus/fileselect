@@ -360,8 +360,9 @@ export class FileSelect {
 
       case 'video':
         previewEl = document.createElement('video');
-        previewEl.preload = 'none';
+        previewEl.preload = '';
         previewEl.src = url;
+        previewEl.controls = true;
         break;
 
       case 'audio':
@@ -426,7 +427,7 @@ export class FileSelect {
     aud.preload = 'metadata';
     aud.classList.add('test');
     aud.oncanplaythrough = () => {
-      URL.revokeObjectURL(url);
+      // URL.revokeObjectURL(url);
     };
     aud.onplay = () => {
       document.querySelectorAll('audio').forEach((audio) => {

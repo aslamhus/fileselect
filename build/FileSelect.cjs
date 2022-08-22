@@ -15,8 +15,6 @@ function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "functio
 
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -41,6 +39,8 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -55,10 +55,11 @@ var FileSelect = function () {
       onReaderProgress: null,
       onReadFileComplete: null,
       onInvalidType: null,
+      onFileSizeLimitExceeded: null,
       multiple: null,
       colors: null,
       theme: null,
-      filesize: null,
+      fileSize: null,
       preview: {
         backgroundImage: false
       }
@@ -74,7 +75,8 @@ var FileSelect = function () {
     this.fileList = [];
     this.preview = options.preview;
     this.onInvalidType = options.onInvalidType;
-    this.filesize = options.filesize || 100000000;
+    this.onFileSizeLimitExceeded = options.onFileSizeLimitExceeded;
+    this.fileSize = options.fileSize || 100000000;
     this.multiple = options.multiple === false ? false : true;
     this.validateArguments(allowedTypes, options);
     this.getPreview = this.getPreview.bind(this);
@@ -96,6 +98,16 @@ var FileSelect = function () {
       }
 
       if (allowedTypes) this.allowedTypes = allowedTypes;else this.allowedTypes = '*';
+    }
+  }, {
+    key: "setFileSizeLimit",
+    value: function setFileSizeLimit(size) {
+      if (isNaN(size)) {
+        throw new Error('Invalid Argument. setFileSizeLimit expected number but found ' + _typeof(size));
+      }
+
+      console.log('set file size limit', size);
+      this.fileSize = size;
     }
   }, {
     key: "createFileInput",
@@ -185,10 +197,36 @@ var FileSelect = function () {
               reject(new Error(types.message));
             }
 
-            if (file.size > _this.filesize) {
-              reject(new Error('Failed to select file, File size exceeded limit'));
+            if (file.size > _this.fileSize) {
+              var fileSizeError = new Error('Failed to select file, File size exceeded limit');
+
+              if (_this.onFileSizeLimitExceeded instanceof Function) {
+                _this.onFileSizeLimitExceeded(fileSizeError, file.size, _this.fileSize);
+              }
+
+              reject(fileSizeError);
             }
           }
+
+          files.toArray = function () {
+            return Array.from(this);
+          };
+
+          files.readFiles = function () {
+            return Promise.resolve(_this.readFiles(fileListArray));
+          };
+
+          files.getPreviews = function () {
+            return Promise.all(fileListArray.map(function (file) {
+              return _this.getPreview(file);
+            }));
+          };
+
+          files.getIcons = function () {
+            return Promise.all(fileListArray.map(function (file) {
+              return _this.getIcon(file);
+            }));
+          };
 
           resolve(files);
         };
@@ -263,7 +301,7 @@ var FileSelect = function () {
 
       return new Promise(function (resolve, reject) {
         if (_typeof(file) !== 'object' || !(file instanceof File)) {
-          reject(new Error('Invalid Argument Exception. Expected instance of file but found ' + _typeof(file)));
+          reject(new Error('Invalid Argument Exception. Expected instance of File but found ' + _typeof(file)));
         }
 
         var f = file;
@@ -277,7 +315,7 @@ var FileSelect = function () {
           reject(new Error(types.message));
         }
 
-        if (file.size > _this3.filesize) {
+        if (file.size > _this3.fileSize) {
           reject(new Error('Failed to handle file, File size exceeded limit'));
         }
 
@@ -420,12 +458,12 @@ var FileSelect = function () {
                 }
 
                 _context4.t0 = mimetype;
-                _context4.next = _context4.t0 === 'application' ? 18 : _context4.t0 === 'text' ? 30 : _context4.t0 === 'video' ? 41 : _context4.t0 === 'audio' ? 45 : _context4.t0 === 'image' ? 47 : 49;
+                _context4.next = _context4.t0 === 'application' ? 18 : _context4.t0 === 'text' ? 28 : _context4.t0 === 'video' ? 39 : _context4.t0 === 'audio' ? 44 : _context4.t0 === 'image' ? 46 : 48;
                 break;
 
               case 18:
                 if (!(subtype === 'pdf')) {
-                  _context4.next = 28;
+                  _context4.next = 26;
                   break;
                 }
 
@@ -434,9 +472,7 @@ var FileSelect = function () {
 
               case 21:
                 pdfBlob = _context4.sent;
-                console.log(this, this.preview);
                 isBgImage = (this === null || this === void 0 ? void 0 : (_this$preview = this.preview) === null || _this$preview === void 0 ? void 0 : _this$preview.backgroundImage) || null;
-                console.log('isBgImage', isBgImage);
 
                 if (isBgImage) {
                   previewEl = FileSelect.createBackgroundImageDiv(pdfBlob, file.type);
@@ -444,61 +480,62 @@ var FileSelect = function () {
                   previewEl = FileSelect.createImg(pdfBlob);
                 }
 
-                _context4.next = 29;
+                _context4.next = 27;
                 break;
 
-              case 28:
+              case 26:
                 previewEl = FileSelect.createNoPreview();
 
-              case 29:
-                return _context4.abrupt("break", 50);
+              case 27:
+                return _context4.abrupt("break", 49);
 
-              case 30:
+              case 28:
                 if (!(subtype === 'plain')) {
-                  _context4.next = 39;
+                  _context4.next = 37;
                   break;
                 }
 
-                _context4.next = 33;
+                _context4.next = 31;
                 return file.text();
 
-              case 33:
+              case 31:
                 text = _context4.sent;
                 previewEl = document.createElement('div');
                 previewEl.style.padding = '15px';
                 previewEl.textContent = text;
-                _context4.next = 40;
+                _context4.next = 38;
                 break;
 
-              case 39:
+              case 37:
                 previewEl = FileSelect.createNoPreview();
 
-              case 40:
-                return _context4.abrupt("break", 50);
+              case 38:
+                return _context4.abrupt("break", 49);
 
-              case 41:
+              case 39:
                 previewEl = document.createElement('video');
-                previewEl.preload = 'none';
+                previewEl.preload = '';
                 previewEl.src = url;
-                return _context4.abrupt("break", 50);
+                previewEl.controls = true;
+                return _context4.abrupt("break", 49);
 
-              case 45:
+              case 44:
                 previewEl = FileSelect.createAudioElement(url, file.type);
-                return _context4.abrupt("break", 50);
+                return _context4.abrupt("break", 49);
 
-              case 47:
+              case 46:
                 if (this !== null && this !== void 0 && (_this$preview2 = this.preview) !== null && _this$preview2 !== void 0 && _this$preview2.backgroundImage) {
                   previewEl = FileSelect.createBackgroundImageDiv(url, file.type);
                 } else {
                   previewEl = FileSelect.createImg(url);
                 }
 
-                return _context4.abrupt("break", 50);
+                return _context4.abrupt("break", 49);
 
-              case 49:
+              case 48:
                 previewEl = FileSelect.createNoPreview();
 
-              case 50:
+              case 49:
                 if (previewEl && mimetype !== 'audio' && mimetype !== 'image' && mimetype !== 'application') {
                   previewEl.onload = function () {
                     URL.revokeObjectURL(url);
@@ -512,7 +549,7 @@ var FileSelect = function () {
 
                 return _context4.abrupt("return", previewEl);
 
-              case 53:
+              case 52:
               case "end":
                 return _context4.stop();
             }
@@ -669,9 +706,7 @@ var FileSelect = function () {
       aud.preload = 'metadata';
       aud.classList.add('test');
 
-      aud.oncanplaythrough = function () {
-        URL.revokeObjectURL(url);
-      };
+      aud.oncanplaythrough = function () {};
 
       aud.onplay = function () {
         document.querySelectorAll('audio').forEach(function (audio) {
