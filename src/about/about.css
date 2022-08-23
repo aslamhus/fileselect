@@ -1,0 +1,28 @@
+body,
+html {
+  padding: 2rem;
+}
+.preview {
+  background-color: #dedede;
+}
+button {
+  margin: 0.55rem 0 !important;
+}
+.preview p {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.example {
+  border: 1px solid lightgray;
+  padding: 1.5rem;
+  margin: 2rem 0;
+}
+span.method {
+  background-color: lightgoldenrodyellow;
+  font-style: normal;
+}
+video,
+img {
+  width: 100px;
+}
