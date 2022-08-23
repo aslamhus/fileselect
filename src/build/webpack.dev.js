@@ -24,7 +24,7 @@ module.exports = merge(common, {
       title: 'FileSelect test',
       template: './src/about/index.html',
       filename: './about/index.html',
-      chunks: ['about'],
+      chunks: ['about', 'FileSelect'],
     }),
   ],
   devServer: {

@@ -106,7 +106,6 @@ var FileSelect = function () {
         throw new Error('Invalid Argument. setFileSizeLimit expected number but found ' + _typeof(size));
       }
 
-      console.log('set file size limit', size);
       this.fileSize = size;
     }
   }, {
@@ -322,14 +321,14 @@ var FileSelect = function () {
         if (file.type.toLowerCase().includes('heic') || file.type.toLowerCase().includes('heif')) {
           if (file.heicConvert) {
             file.heicConvert.then(function (blob) {
-              var newFile = FileSelect.blobToFile(blob, file);
+              var newFile = FileSelect.blobToFile(blob, f);
 
               _this3.readFile(newFile, resolve, reject);
             });
           } else {
-            file.heicConvert = FileSelect.getHEICBlob(file);
+            file.heicConvert = FileSelect.getHEICBlob(f);
             file.heicConvert.then(function (blob) {
-              var newFile = FileSelect.blobToFile(blob, file);
+              var newFile = FileSelect.blobToFile(blob, f);
 
               _this3.readFile(newFile, resolve, reject);
             });
@@ -779,7 +778,7 @@ var FileSelect = function () {
     key: "blobToFile",
     value: function blobToFile(blob, file) {
       var ext = blob.type.split('/')[1];
-      var newFilename = file.uuid.replace(/(HEIC)/, ext);
+      var newFilename = ((file === null || file === void 0 ? void 0 : file.uuid) || (file === null || file === void 0 ? void 0 : file.name)).replace(/(HEIC)/, ext);
       var newFile = new File([blob], newFilename, {
         type: blob.type
       });

@@ -1,6 +1,6 @@
 {
   "name": "@aslamhus/fileselect",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "Select and read a file for preview/upload",
   "main": "./build/FileSelect.cjs",
   "directories": {
@@ -29,6 +29,7 @@
   "homepage": "https://github.com/aslamhus/fileselect.gi#readme",
   "dependencies": {
     "@aslamhus/fileicon": "^2.0.0",
+    "@aslamhus/fileselect": "^2.3.0",
     "core-js": "^3.14.0",
     "heic2any": "^0.0.3",
     "pdfjs-dist": "~2.6.347",
