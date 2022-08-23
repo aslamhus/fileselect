@@ -1,4 +1,4 @@
-import { FileSelect } from '../../lib/FileSelect.mjs';
+import { FileSelect } from '../../build/FileSelect.cjs';
 
 export const selectAndGetFiles = () => {
   const example = document.querySelector('#file-select');

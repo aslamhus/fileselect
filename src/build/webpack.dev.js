@@ -11,6 +11,14 @@ module.exports = merge(common, {
     about: './src/about/index.js',
   },
 
+  module: {
+    rules: [
+      {
+        test: /\.css$/i,
+        use: ['style-loader', 'css-loader'],
+      },
+    ],
+  },
   plugins: [
     new HtmlWebpackPlugin({
       title: 'FileSelect test',

@@ -7,6 +7,7 @@ import {
   restrictFileType,
   restrictFileTypeMultiple,
 } from './utils.js';
+import './about.css';
 
 if (module.hot) {
   module.hot.accept();
