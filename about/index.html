@@ -15,8 +15,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css"
       rel="stylesheet"
     />
-    <script defer src="about.js"></script>
-  </head>
+  <script defer src="scripts/about.js"></script></head>
   <body>
     <main>
       <h1>File Select</h1>
@@ -42,7 +41,7 @@
       <!-- File select -->
       <div id="file-select" class="example">
         <h2>Select and get files</h2>
-        <p>Yes, it's that easy!</p>
+        <p>Nice and simple</p>
         <div class="code">
           <pre>
             <code class="language-javascript">
@@ -63,12 +62,14 @@
       <div id="get-previews" class="example">
         <h2>Get Previews</h2>
         <p>
-          Previews return image elements for each file whose src is an ObjectURL. Read more about
+          <span class="method">getPreviews</span> returns image elements for each file in the
+          fileList. The <span class="method">src</span> of the image is an
+          <span class="method">ObjectURL</span>. Read more about
           <a
             href="https://developer.mozilla.org/en-US/docs/Web/API/File_API/Using_files_from_web_applications#example_using_object_urls_to_display_images"
             >ObjectURLs</a
           >. Each image will revoke its ObjectURL when it loads, so your browser resources don't get
-          overstuffed.
+          overloaded.
         </p>
         <p></p>
         <div class="code">
@@ -128,7 +129,7 @@
         <p>
           By default, <em>FileSelect</em> allows all file types. In this example we restrict the
           selectable files to pdfs by passing the mimetype 'application/pdf' to the FileSelect
-          constructor.
+          <span class="method">constructor</span>.
         </p>
         <p></p>
         <div class="code">
@@ -184,7 +185,7 @@
       <div id="get-icons" class="example">
         <h2>Get icons</h2>
         <p>
-          Helpful if you are building a file uploader. See
+          Helpful if you are building a file uploader and want to display the file type, See
           <a href="https://github.com/aslamhus/fileicon">@aslamhus/fileicon</a> for more
           information.
         </p>
@@ -192,14 +193,10 @@
           <pre>
             <code class="language-javascript">
               const fileSelect = new FileSelect();
-              fileSelect.select()
-              .then((files) => {
-                // note that getIcons returns a promise
-                // so we must use async/await
+              fileSelect.select().then((files) => {
                 files.getIcons().then(icons => {
                   document.body.append(...icons)
                 })
-                
               })
               
           </code>
@@ -232,12 +229,10 @@
               },
               }
              });
-            fileSelect.select()
-            .then(files => {
-             files.getIcons().then(icons => {
-              document.body.append(...icons)
-             })
-            })
+            const files = await fileSelect.select();
+            const icons = await files.getIcons();
+            document.body.append(...icons)
+            
             
         </code>
       </pre>
