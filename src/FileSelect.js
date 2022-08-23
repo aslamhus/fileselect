@@ -91,7 +91,6 @@ export class FileSelect {
         'Invalid Argument. setFileSizeLimit expected number but found ' + typeof size
       );
     }
-    console.log('set file size limit', size);
     this.fileSize = size;
   }
 
@@ -250,14 +249,14 @@ export class FileSelect {
           // check if an Heic conversion has already taken place
           // or is in progress
           file.heicConvert.then((blob) => {
-            const newFile = FileSelect.blobToFile(blob, file);
+            const newFile = FileSelect.blobToFile(blob, f);
             this.readFile(newFile, resolve, reject);
           });
         } else {
           // convert the heic to jpeg
-          file.heicConvert = FileSelect.getHEICBlob(file);
+          file.heicConvert = FileSelect.getHEICBlob(f);
           file.heicConvert.then((blob) => {
-            const newFile = FileSelect.blobToFile(blob, file);
+            const newFile = FileSelect.blobToFile(blob, f);
             // read file
             this.readFile(newFile, resolve, reject);
           });
@@ -464,7 +463,8 @@ export class FileSelect {
 
   static blobToFile(blob, file) {
     const ext = blob.type.split('/')[1];
-    const newFilename = file.uuid.replace(/(HEIC)/, ext);
+
+    const newFilename = (file?.uuid || file?.name).replace(/(HEIC)/, ext);
     const newFile = new File([blob], newFilename, { type: blob.type });
     newFile.uuid = newFilename;
 
