@@ -2,6 +2,7 @@
 <html lang="en-gb">
   <head>
     <!-- Bootstrap -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css"
@@ -44,7 +45,7 @@
         <p>Nice and simple</p>
         <div class="code">
           <pre>
-            <code class="language-javascript">
+            <code data-remove-indent class="language-javascript">
               const fileSelect = new FileSelect();
               fileSelect.select().then((fileList) => {
                 // write names of files 
@@ -62,14 +63,21 @@
       <div id="get-previews" class="example">
         <h2>Get Previews</h2>
         <p>
-          <span class="method">getPreviews</span> returns image elements for each file in the
-          fileList. The <span class="method">src</span> of the image is an
-          <span class="method">ObjectURL</span>. Read more about
+          <span class="method">getPreviews</span> returns an <span class="method">IMG</span>,<span
+            class="method"
+            >VIDEO</span
+          >, or <span class="method">AUDIO</span> element depending on the file type for each file
+          in the fileList. The <span class="method">src</span> of the element is an
+          <span class="method">ObjectURL</span> created from the selected file. Each element, except
+          in the case of an <span class="method">AUDIO</span> element, will revoke their ObjectURL
+          when they load so your browser resources don't get overloaded. If you are creating
+          previews of audio elements, please ensure you
+          <a href="https://developer.mozilla.org/en-US/docs/Web/API/URL/revokeObjectURL">revoke</a>
+          the ObjectURL yourself. <br />For more info, read the MDN specification on
           <a
             href="https://developer.mozilla.org/en-US/docs/Web/API/File_API/Using_files_from_web_applications#example_using_object_urls_to_display_images"
             >ObjectURLs</a
-          >. Each image will revoke its ObjectURL when it loads, so your browser resources don't get
-          overloaded.
+          >.
         </p>
         <p></p>
         <div class="code">
@@ -128,7 +136,8 @@
         <h2>Restrict file type</h2>
         <p>
           By default, <em>FileSelect</em> allows all file types. In this example we restrict the
-          selectable files to pdfs by passing the mimetype 'application/pdf' to the FileSelect
+          selectable files to pdfs by passing the
+          <span class="method">mimetype</span> 'application/pdf' to the FileSelect
           <span class="method">constructor</span>.
         </p>
         <p></p>
