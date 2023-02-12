@@ -191,7 +191,9 @@ export class FileSelect {
     if (files?.length) {
       // is FileList or Array
       Object.values(files).forEach((file) => {
-        filesRead.push(this.handleFile(file, this.allowedTypes));
+        if (file instanceof File) {
+          filesRead.push(this.handleFile(file, this.allowedTypes));
+        }
       });
       return await Promise.all(filesRead);
     }

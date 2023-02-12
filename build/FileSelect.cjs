@@ -264,7 +264,9 @@ var FileSelect = function () {
                 }
 
                 Object.values(files).forEach(function (file) {
-                  filesRead.push(_this2.handleFile(file, _this2.allowedTypes));
+                  if (file instanceof File) {
+                    filesRead.push(_this2.handleFile(file, _this2.allowedTypes));
+                  }
                 });
                 _context2.next = 5;
                 return Promise.all(filesRead);

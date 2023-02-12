@@ -221,3 +221,17 @@ describe('Remove files from fileList and input file', async () => {
     expect(FS.fileInput.value).to.equal(null || '');
   });
 });
+
+describe('pass array of 2 files and 1 method to readFiles', async () => {
+  it('should return array of 2 read files, ignoring non file object', async () => {
+    const f = new File([''], 'filename.mp4', {
+      type: 'video/mp4',
+      lastModified: '',
+    });
+    const fileList = [f, f, () => {}];
+    const FS = new FileSelect();
+    const dataURLs = await FS.readFiles(fileList);
+
+    expect(dataURLs.length).to.equal(2);
+  });
+});
