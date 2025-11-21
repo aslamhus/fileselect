@@ -1,0 +1,9 @@
+*** IMPORTANT ***
+
+Do not upgrade PDJS above version 2.6.347 for now.
+The new versions introduce private fieldnames for JS classes, which are not
+widely supported by all browsers currently.
+
+Wait until this is properly resolved.
+
+"pdfjs-dist": "~2.6.347",

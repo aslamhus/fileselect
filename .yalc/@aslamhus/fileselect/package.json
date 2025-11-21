@@ -1,0 +1,41 @@
+{
+  "name": "@aslamhus/fileselect",
+  "version": "2.4.1",
+  "description": "Select and read a file for preview/upload",
+  "main": "./build/FileSelect.cjs",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha",
+    "build": "bin/build.sh",
+    "build-yalc": "bin/build.sh && yalc publish --push",
+    "build-about": "webpack --config ./src/build/webpack.about.prod.js",
+    "start": "webpack serve --config ./src/build/webpack.dev.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aslamhus/fileselect.git"
+  },
+  "keywords": [
+    "file",
+    "select"
+  ],
+  "author": "Aslam Husain",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aslamhus/fileselect.gi/issues"
+  },
+  "homepage": "https://github.com/aslamhus/fileselect.gi#readme",
+  "dependencies": {
+    "@aslamhus/fileicon": "^2.0.0",
+    "@aslamhus/fileselect": "file:.yalc/@aslamhus/fileselect",
+    "core-js": "^3.14.0",
+    "heic2any": "^0.0.3",
+    "pdfjs": "^2.5.4",
+    "pdfjs-dist": "^5.4.394",
+    "regenerator-runtime": "^0.13.7",
+    "worker-loader": "^3.0.8"
+  },
+  "yalcSig": "5291ef8c73e4ccba364758d0a9caba4c"
+}
