@@ -29,8 +29,8 @@
  *      - sets whether preview returns div element with background image (true) or img element (false) (default)
  */
 
-import 'core-js/stable';
-import 'regenerator-runtime/runtime';
+// import 'core-js/stable';
+// import 'regenerator-runtime/runtime';
 import { FileIcon } from '@aslamhus/fileicon';
 
 export class FileSelect {
@@ -482,7 +482,7 @@ export class FileSelect {
 
   static getPDF(url) {
     return new Promise((resolve) =>
-      import(/* webpackChunkName: "pdfjs" */ 'pdfjs-dist/webpack').then((pdfjsLib) => {
+      import(/* webpackChunkName: "pdfjs" */ 'pdfjs-dist/webpack.mjs').then((pdfjsLib) => {
         if (typeof pdfjsLib === 'undefined') {
           throw new Error("couldn't initialize pdf.js library");
         }
@@ -516,6 +516,7 @@ export class FileSelect {
             });
           });
         });
+        // });
       })
     );
   }

@@ -1,4 +1,5 @@
-import { FileSelect } from '../FileSelect';
+// import { FileSelect } from '../FileSelect';
+import { FileSelect } from '@aslamhus/fileselect';
 
 export const selectAndGetFiles = () => {
   const example = document.querySelector('#file-select');

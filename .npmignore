@@ -11,3 +11,4 @@ bin
 src/build/compilation-stats.json
 about
 _config.yml
+.yalc

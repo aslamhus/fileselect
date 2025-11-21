@@ -31,16 +31,16 @@ module.exports = merge(common, {
     // devMiddleware: {
     //   publicPath: '/',
     // },
-    static: {
-      // directory: path.join(__dirname, '../../test'),
-      // publicPath: '',
-    },
+    // static: {
+    // directory: path.join(__dirname, '../../test'),
+    // publicPath: '',
+    // },
     open: ['./about/index.html'],
     // compress: true,
     // liveReload: false,
     hot: true,
     host: 'localhost',
     port: 3000,
-    https: false,
+    // https: false,
   },
 });
