@@ -1,3 +1,6 @@
+/**
+ * Uses yalc npm package locally for testing.
+ */
 import {
   selectAndGetFiles,
   getPreviews,

@@ -1,4 +1,3 @@
-// import { FileSelect } from '../FileSelect';
 import { FileSelect } from '@aslamhus/fileselect';
 
 export const selectAndGetFiles = () => {

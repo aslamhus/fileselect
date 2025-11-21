@@ -7,4 +7,3 @@ logs
 .eslintignore
 .DS_Store
 src/build/compilation-stats.json
-.yalc

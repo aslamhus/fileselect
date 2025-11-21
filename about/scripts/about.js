@@ -1013,7 +1013,7 @@ var FileSelect = exports.FileSelect = function () {
     value: function getPDF(url) {
       return new Promise(function (resolve) {
         return Promise.resolve().then(function () {
-          return _interopRequireWildcard(__webpack_require__(/*! pdfjs-dist */ "./node_modules/pdfjs-dist/build/pdf.mjs"));
+          return _interopRequireWildcard(__webpack_require__(/*! pdfjs-dist/webpack.mjs */ "./node_modules/pdfjs-dist/webpack.mjs"));
         }).then(function (pdfjsLib) {
           if (typeof pdfjsLib === 'undefined') {
             throw new Error("couldn't initialize pdf.js library");
@@ -27954,6 +27954,103 @@ globalThis.pdfjsLib = {
 
 /***/ }),
 
+/***/ "./node_modules/pdfjs-dist/webpack.mjs":
+/*!*********************************************!*\
+  !*** ./node_modules/pdfjs-dist/webpack.mjs ***!
+  \*********************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   AbortException: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.AbortException),
+/* harmony export */   AnnotationEditorLayer: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.AnnotationEditorLayer),
+/* harmony export */   AnnotationEditorParamsType: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.AnnotationEditorParamsType),
+/* harmony export */   AnnotationEditorType: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.AnnotationEditorType),
+/* harmony export */   AnnotationEditorUIManager: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.AnnotationEditorUIManager),
+/* harmony export */   AnnotationLayer: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.AnnotationLayer),
+/* harmony export */   AnnotationMode: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.AnnotationMode),
+/* harmony export */   AnnotationType: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.AnnotationType),
+/* harmony export */   CSSConstants: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.CSSConstants),
+/* harmony export */   ColorPicker: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.ColorPicker),
+/* harmony export */   DOMSVGFactory: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.DOMSVGFactory),
+/* harmony export */   DrawLayer: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.DrawLayer),
+/* harmony export */   FeatureTest: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.FeatureTest),
+/* harmony export */   GlobalWorkerOptions: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.GlobalWorkerOptions),
+/* harmony export */   ImageKind: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.ImageKind),
+/* harmony export */   InvalidPDFException: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.InvalidPDFException),
+/* harmony export */   MathClamp: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.MathClamp),
+/* harmony export */   OPS: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.OPS),
+/* harmony export */   OutputScale: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.OutputScale),
+/* harmony export */   PDFDataRangeTransport: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.PDFDataRangeTransport),
+/* harmony export */   PDFDateString: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.PDFDateString),
+/* harmony export */   PDFWorker: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.PDFWorker),
+/* harmony export */   PasswordResponses: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.PasswordResponses),
+/* harmony export */   PermissionFlag: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.PermissionFlag),
+/* harmony export */   PixelsPerInch: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.PixelsPerInch),
+/* harmony export */   RenderingCancelledException: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.RenderingCancelledException),
+/* harmony export */   ResponseException: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.ResponseException),
+/* harmony export */   SignatureExtractor: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.SignatureExtractor),
+/* harmony export */   SupportedImageMimeTypes: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.SupportedImageMimeTypes),
+/* harmony export */   TextLayer: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.TextLayer),
+/* harmony export */   TouchManager: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.TouchManager),
+/* harmony export */   Util: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.Util),
+/* harmony export */   VerbosityLevel: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.VerbosityLevel),
+/* harmony export */   XfaLayer: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.XfaLayer),
+/* harmony export */   applyOpacity: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.applyOpacity),
+/* harmony export */   build: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.build),
+/* harmony export */   createValidAbsoluteUrl: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.createValidAbsoluteUrl),
+/* harmony export */   fetchData: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.fetchData),
+/* harmony export */   findContrastColor: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.findContrastColor),
+/* harmony export */   getDocument: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.getDocument),
+/* harmony export */   getFilenameFromUrl: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.getFilenameFromUrl),
+/* harmony export */   getPdfFilenameFromUrl: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.getPdfFilenameFromUrl),
+/* harmony export */   getRGB: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.getRGB),
+/* harmony export */   getUuid: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.getUuid),
+/* harmony export */   getXfaPageViewport: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.getXfaPageViewport),
+/* harmony export */   isDataScheme: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.isDataScheme),
+/* harmony export */   isPdfFile: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.isPdfFile),
+/* harmony export */   isValidExplicitDest: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.isValidExplicitDest),
+/* harmony export */   noContextMenu: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.noContextMenu),
+/* harmony export */   normalizeUnicode: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.normalizeUnicode),
+/* harmony export */   renderRichText: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.renderRichText),
+/* harmony export */   setLayerDimensions: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.setLayerDimensions),
+/* harmony export */   shadow: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.shadow),
+/* harmony export */   stopEvent: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.stopEvent),
+/* harmony export */   updateUrlHash: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.updateUrlHash),
+/* harmony export */   version: () => (/* reexport safe */ _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.version)
+/* harmony export */ });
+/* harmony import */ var _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./build/pdf.mjs */ "./node_modules/pdfjs-dist/build/pdf.mjs");
+/* Copyright 2022 Mozilla Foundation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/* eslint-disable import/no-unresolved */
+
+
+
+if (typeof window !== "undefined" && "Worker" in window) {
+  _build_pdf_mjs__WEBPACK_IMPORTED_MODULE_0__.GlobalWorkerOptions.workerPort = new Worker(
+    new URL(/* worker import */ __webpack_require__.p + __webpack_require__.u("vendors-node_modules_pdfjs-dist_build_pdf_worker_mjs"), __webpack_require__.b),
+    { type: undefined }
+  );
+}
+
+
+
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js":
 /*!****************************************************************************!*\
   !*** ./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js ***!
@@ -28488,6 +28585,9 @@ var stopLoader = function stopLoader(container) {
 /******/ 		return module.exports;
 /******/ 	}
 /******/ 	
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = __webpack_modules__;
+/******/ 	
 /************************************************************************/
 /******/ 	/* webpack/runtime/compat get default export */
 /******/ 	(() => {
@@ -28513,6 +28613,27 @@ var stopLoader = function stopLoader(container) {
 /******/ 		};
 /******/ 	})();
 /******/ 	
+/******/ 	/* webpack/runtime/get javascript chunk filename */
+/******/ 	(() => {
+/******/ 		// This function allow to reference async chunks
+/******/ 		__webpack_require__.u = (chunkId) => {
+/******/ 			// return url for filenames based on template
+/******/ 			return "scripts/" + chunkId + ".js";
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/global */
+/******/ 	(() => {
+/******/ 		__webpack_require__.g = (function() {
+/******/ 			if (typeof globalThis === 'object') return globalThis;
+/******/ 			try {
+/******/ 				return this || new Function('return this')();
+/******/ 			} catch (e) {
+/******/ 				if (typeof window === 'object') return window;
+/******/ 			}
+/******/ 		})();
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
 /******/ 	(() => {
 /******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
@@ -28527,6 +28648,55 @@ var stopLoader = function stopLoader(container) {
 /******/ 			}
 /******/ 			Object.defineProperty(exports, '__esModule', { value: true });
 /******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/publicPath */
+/******/ 	(() => {
+/******/ 		var scriptUrl;
+/******/ 		if (__webpack_require__.g.importScripts) scriptUrl = __webpack_require__.g.location + "";
+/******/ 		var document = __webpack_require__.g.document;
+/******/ 		if (!scriptUrl && document) {
+/******/ 			if (document.currentScript && document.currentScript.tagName.toUpperCase() === 'SCRIPT')
+/******/ 				scriptUrl = document.currentScript.src;
+/******/ 			if (!scriptUrl) {
+/******/ 				var scripts = document.getElementsByTagName("script");
+/******/ 				if(scripts.length) {
+/******/ 					var i = scripts.length - 1;
+/******/ 					while (i > -1 && (!scriptUrl || !/^http(s?):/.test(scriptUrl))) scriptUrl = scripts[i--].src;
+/******/ 				}
+/******/ 			}
+/******/ 		}
+/******/ 		// When supporting browsers where an automatic publicPath is not supported you must specify an output.publicPath manually via configuration
+/******/ 		// or pass an empty string ("") and set the __webpack_public_path__ variable from your code to use your own logic.
+/******/ 		if (!scriptUrl) throw new Error("Automatic publicPath is not supported in this browser");
+/******/ 		scriptUrl = scriptUrl.replace(/^blob:/, "").replace(/#.*$/, "").replace(/\?.*$/, "").replace(/\/[^\/]+$/, "/");
+/******/ 		__webpack_require__.p = scriptUrl + "../";
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/jsonp chunk loading */
+/******/ 	(() => {
+/******/ 		__webpack_require__.b = (typeof document !== 'undefined' && document.baseURI) || self.location.href;
+/******/ 		
+/******/ 		// object to store loaded and loading chunks
+/******/ 		// undefined = chunk not loaded, null = chunk preloaded/prefetched
+/******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
+/******/ 		var installedChunks = {
+/******/ 			"about": 0
+/******/ 		};
+/******/ 		
+/******/ 		// no chunk on demand loading
+/******/ 		
+/******/ 		// no prefetching
+/******/ 		
+/******/ 		// no preloaded
+/******/ 		
+/******/ 		// no HMR
+/******/ 		
+/******/ 		// no HMR manifest
+/******/ 		
+/******/ 		// no on chunks loaded
+/******/ 		
+/******/ 		// no jsonp function
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/nonce */
