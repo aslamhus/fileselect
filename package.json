@@ -41,8 +41,8 @@
     "@aslamhus/fileselect": "file:.yalc/@aslamhus/fileselect",
     "core-js": "^3.14.0",
     "heic2any": "^0.0.3",
-    "pdfjs": "^2.5.4",
-    "pdfjs-dist": "^5.4.394",
+    "pdfjs": "^0.5.4",
+    "pdfjs-dist": "*",
     "regenerator-runtime": "^0.13.7",
     "worker-loader": "^3.0.8"
   },
@@ -70,7 +70,7 @@
     "html-loader": "^2.1.2",
     "html-webpack-plugin": "^5.3.2",
     "jsdom": "^27.2.0",
-    "mocha": "^11.7.5",
+    "mocha": "^12.0.1",
     "prettier": "^2.3.2",
     "regenerator-runtime": "^0.13.7",
     "rollup-plugin-web-worker-loader": "^1.6.1",
@@ -79,7 +79,7 @@
     "url-loader": "^4.1.1",
     "webpack": "^5.74.0",
     "webpack-cli": "^6.0.1",
-    "webpack-dev-server": "^5.2.2",
+    "webpack-dev-server": "^6.0.0",
     "webpack-merge": "^5.8.0"
   }
 }
